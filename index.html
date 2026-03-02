@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Loan Manager Pro - Botones Arriba</title>
+    <style>
+        :root { --primary: #2c3e50; --accent-blue: #3498db; --accent-green: #27ae60; --danger: #e74c3c; --github: #24292e; --gray: #95a5a6; --bg: #f0f3f5; }
+        
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 10px; background-color: var(--bg); }
+        .container { background: white; padding: 1.2rem; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin: auto; box-sizing: border-box; }
+        
+        /* Panel de Control Superior (Sync y Archivos) */
+        .top-panel { background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #e1e4e8; }
+        .file-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        
+        /* Botones de control */
+        .btn-small { padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 0.8rem; color: white; transition: 0.2s; }
+        .btn-sync { background-color: var(--github); width: 100%; }
+        .btn-export { background-color: var(--gray); }
+        .btn-import { background-color: var(--gray); }
+
+        /* Dashboard */
+        .balance-card { background: var(--primary); color: white; padding: 25px 15px; border-radius: 18px; text-align: center; margin-bottom: 20px; }
+        .balance-label { font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 2px; }
+        .balance-display { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-top: 5px; }
+
+        #setupSection { background: #fff; padding: 15px; border: 2px dashed var(--gray); border-radius: 15px; margin-bottom: 20px; text-align: center; }
+        
+        /* Inputs y Botones de Pago */
+        label { display: block; margin-bottom: 4px; font-weight: 700; font-size: 0.75rem; color: var(--gray); text-transform: uppercase; }
+        input { width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 1.1rem; margin-bottom: 12px; }
+        
+        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 15px; cursor: pointer; color: white; font-weight: 800; font-size: 1rem; margin-top: 5px; }
+        .btn-monthly { background-color: var(--accent-blue); margin-bottom: 8px; }
+        .btn-partial { background-color: var(--accent-green); }
+
+        /* Historial */
+        ul { list-style: none; padding: 0; margin: 20px 0; }
+        li { background: #fff; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; border: 1px solid #eee; }
+        .order-controls { display: flex; flex-direction: column; margin-right: 12px; gap: 4px; }
+        .btn-order { background: #f0f0f0; border: none; border-radius: 6px; width: 40px; height: 35px; font-size: 1.1rem; }
+        
+        .item-content { flex-grow: 1; }
+        .item-amount { font-size: 1.4rem; font-weight: 800; display: block; color: #1a1a1a; }
+        .btn-delete { background: #fee; color: var(--danger); border: none; font-size: 1.5rem; width: 45px; height: 45px; border-radius: 10px; }
+
+        #fileInput { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-panel">
+        <label>GitHub Sync (usuario/repo/rama/archivo.json)</label>
+        <input type="text" id="repoPath" placeholder="ej: pepe/datos/main/pago.json" style="font-size: 0.85rem; padding: 10px; margin-bottom: 8px;">
+        <button class="btn-small btn-sync" onclick="syncFromGitHub()">🔄 SYNC DESDE CLOUD</button>
+        
+        <div class="file-actions">
+            <button class="btn-small btn-export" onclick="exportToJSON()">💾 EXPORTAR JSON</button>
+            <button class="btn-small btn-import" onclick="document.getElementById('fileInput').click()">📂 IMPORTAR JSON</button>
+            <input type="file" id="fileInput" accept=".json" onchange="importFromJSON(event)">
+        </div>
+    </div>
+
+    <div id="setupSection">
+        <label>Deuda Inicial</label>
+        <input type="number" id="initialInput" placeholder="0.00">
+        <button class="btn-main" style="background: var(--primary);" onclick="setInitial()">FIJAR DEUDA</button>
+    </div>
+
+    <div class="balance-card">
+        <div class="balance-label">Pendiente</div>
+        <div id="balanceDisplay" class="balance-display">0.00€</div>
+    </div>
+
+    <div id="actionSection" style="display: none;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div><label>Fecha</label><input type="date" id="dateInput"></div>
+            <div><label>Importe</label><input type="number" id="paymentInput" placeholder="0.00"></div>
+        </div>
+        
+        <button class="btn-main btn-monthly" onclick="addPayment('MENSUAL')">REGISTRAR MENSUALIDAD</button>
+        <button class="btn-main btn-partial" onclick="addPayment('APORTACIÓN PARCIAL')">APORTACIÓN PARCIAL</button>
+
+        <ul id="historyList"></ul>
+    </div>
+</div>
+
+<script>
+    let initialDebt = 0;
+    let payments = [];
+
+    window.onload = () => {
+        const savedPath = localStorage.getItem('githubPath');
+        if (savedPath) document.getElementById('repoPath').value = savedPath;
+        const savedData = localStorage.getItem('loanData');
+        if (savedData) loadData(JSON.parse(savedData));
+        document.getElementById('dateInput').valueAsDate = new Date();
+    };
+
+    async function syncFromGitHub() {
+        const path = document.getElementById('repoPath').value;
+        if (!path) return alert("Ruta vacía");
+        const url = `https://raw.githubusercontent.com/${path}?nocache=${Date.now()}`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Error de red");
+            const data = await response.json();
+            loadData(data);
+            saveData();
+            localStorage.setItem('githubPath', path);
+            alert("¡Sincronizado!");
+        } catch (err) { alert("Error: " + err.message); }
+    }
+
+    function loadData(data) {
+        initialDebt = data.initialDebt;
+        payments = data.payments || [];
+        document.getElementById('setupSection').style.display = 'none';
+        document.getElementById('actionSection').style.display = 'block';
+        updateUI();
+    }
+
+    function setInitial() {
+        const val = parseFloat(document.getElementById('initialInput').value);
+        if (isNaN(val)) return;
+        initialDebt = val;
+        loadData({ initialDebt, payments: [] });
+        saveData();
+    }
+
+    function addPayment(type) {
+        const amount = parseFloat(document.getElementById('paymentInput').value);
+        const date = document.getElementById('dateInput').value;
+        if (isNaN(amount) || !date) return;
+        payments.unshift({ id: Date.now(), amount, date, type });
+        document.getElementById('paymentInput').value = "";
+        saveData();
+        updateUI();
+    }
+
+    function moveItem(index, direction) {
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= payments.length) return;
+        [payments[index], payments[newIndex]] = [payments[newIndex], payments[index]];
+        saveData();
+        updateUI();
+    }
+
+    function deletePayment(index) {
+        if(confirm("¿Borrar?")) {
+            payments.splice(index, 1);
+            saveData();
+            updateUI();
+        }
+    }
+
+    function saveData() {
+        localStorage.setItem('loanData', JSON.stringify({ initialDebt, payments }));
+    }
+
+    function updateUI() {
+        const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
+        const currentBalance = initialDebt - totalPaid;
+        const display = document.getElementById('balanceDisplay');
+        display.innerText = Math.max(0, currentBalance).toLocaleString('de-DE', {minimumFractionDigits: 2}) + "€";
+        
+        const list = document.getElementById('historyList');
+        list.innerHTML = "";
+        payments.forEach((p, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <div class="order-controls">
+                    <button class="btn-order" onclick="moveItem(${index}, -1)">▲</button>
+                    <button class="btn-order" onclick="moveItem(${index}, 1)">▼</button>
+                </div>
+                <div class="item-content">
+                    <span class="item-amount">-${p.amount.toFixed(2)}€</span>
+                    <span style="font-size:0.75rem; color:var(--accent-blue); font-weight:bold">${p.type}</span> | 
+                    <span style="color:#888; font-size:0.85rem">${p.date.split('-').reverse().join('/')}</span>
+                </div>
+                <button class="btn-delete" onclick="deletePayment(${index})">×</button>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    function exportToJSON() {
+        const dataStr = JSON.stringify({ initialDebt, payments }, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `amortizacion_${new Date().toISOString().slice(0,10)}.json`;
+        link.click();
+    }
+
+    function importFromJSON(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                loadData(JSON.parse(e.target.result));
+                saveData();
+            } catch (err) { alert("Error en el archivo"); }
+        };
+        reader.readAsText(file);
+    }
+</script>
+</body>
+</html>
