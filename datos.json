@@ -1,11 +1,1 @@
-{
-  "initialDebt": 150000,
-  "payments": [
-    {
-      "id": 1772478995627,
-      "amount": 3000,
-      "date": "2026-03-02",
-      "type": "MENSUAL"
-    }
-  ]
-}
+{"initialDebt":175000,"payments":[{"id":1772486173879,"amount":560.25,"date":"2026-02-27","type":"MENSUAL","who":"Edu"},{"id":1772486560847,"amount":2000,"date":"2026-02-06","type":"PARCIAL","who":"Papas"},{"id":1772486135051,"amount":587.58,"date":"2026-01-30","type":"MENSUAL","who":"Edu"},{"id":1772486095803,"amount":1500,"date":"2026-01-07","type":"PARCIAL","who":"Edu"},{"id":1772486054847,"amount":592.65,"date":"2025-12-31","type":"MENSUAL","who":"Edu"},{"id":1772486454051,"amount":1500,"date":"2025-12-04","type":"MENSUAL","who":"Papas"},{"id":1772486020126,"amount":591.09,"date":"2025-11-28","type":"MENSUAL","who":"Edu"},{"id":1772487186759,"amount":1000,"date":"2025-11-05","type":"MENSUAL","who":"Edu"},{"id":1772487115643,"amount":1200,"date":"2025-11-03","type":"PARCIAL","who":"Edu"},{"id":1772486400843,"amount":800,"date":"2025-11-03","type":"PARCIAL","who":"Papas"},{"id":1772485979459,"amount":603.97,"date":"2025-10-31","type":"MENSUAL","who":"Edu"},{"id":1772485955599,"amount":603.97,"date":"2025-09-30","type":"MENSUAL","who":"Edu"},{"id":1772485927483,"amount":182.29,"date":"2025-08-29","type":"MENSUAL","who":"Edu"}]}

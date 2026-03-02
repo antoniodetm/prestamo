@@ -3,99 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mi Préstamo - Ajuste Móvil</title>
+    <title>Préstamo - Decimales Corregidos</title>
     <style>
         :root { --primary: #2c3e50; --accent-blue: #3498db; --accent-green: #27ae60; --danger: #e74c3c; --github: #24292e; --gray: #95a5a6; --bg: #f0f3f5; }
-        
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 10px; background-color: var(--bg); }
-        .container { background: white; padding: 1rem; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin: auto; box-sizing: border-box; }
-        
-        /* Panel Superior */
-        .top-panel { background: #f8f9fa; padding: 12px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #e1e4e8; }
-        .file-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        
-        .btn-small { padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 0.85rem; color: white; transition: 0.2s; }
-        .btn-sync { background-color: var(--github); width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 10px; background-color: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .container { background: white; padding: 1rem; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin: auto; box-sizing: border-box; display: flex; flex-direction: column; max-height: 98vh; }
+        .header-fixed { flex-shrink: 0; }
+        .top-panel { background: #f8f9fa; padding: 10px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #e1e4e8; }
+        .file-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .btn-small { padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 0.75rem; color: white; }
+        .btn-sync { background-color: var(--github); }
         .btn-export { background-color: var(--gray); }
-        .btn-import { background-color: var(--gray); }
-
-        /* Dashboard */
-        .balance-card { background: var(--primary); color: white; padding: 25px 10px; border-radius: 18px; text-align: center; margin-bottom: 20px; }
-        .balance-label { font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 2px; }
-        .balance-display { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-top: 5px; }
-
-        #setupSection { background: #fff; padding: 15px; border: 2px dashed var(--gray); border-radius: 15px; margin-bottom: 20px; text-align: center; }
-        
-        label { display: block; margin-bottom: 4px; font-weight: 700; font-size: 0.7rem; color: var(--gray); text-transform: uppercase; }
-        
-        /* Ajuste de Inputs sin padding lateral excesivo */
-        .input-group { display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px; margin-bottom: 12px; width: 100%; }
-        input { width: 100%; padding: 14px 8px; border: 2px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 1rem; -webkit-appearance: none; }
-        
-        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 15px; cursor: pointer; color: white; font-weight: 800; font-size: 1.1rem; margin-top: 5px; }
-        .btn-monthly { background-color: var(--accent-blue); margin-bottom: 8px; }
+        .balance-card { background: var(--primary); color: white; padding: 15px 10px; border-radius: 15px; text-align: center; margin-bottom: 15px; }
+        .balance-label { font-size: 0.7rem; opacity: 0.7; text-transform: uppercase; font-weight: bold; }
+        .balance-display { font-size: 2rem; font-weight: 800; margin-top: 5px; }
+        .totals-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: #f0f3f5; padding: 10px; border-radius: 12px; border: 1px solid #e1e4e8; }
+        .total-box { text-align: center; }
+        .total-name { font-size: 0.65rem; font-weight: bold; color: var(--gray); text-transform: uppercase; }
+        .total-value { font-size: 1rem; font-weight: 800; color: var(--primary); }
+        .input-group { display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        label { display: block; margin-bottom: 2px; font-weight: 700; font-size: 0.65rem; color: var(--gray); text-transform: uppercase; }
+        input, select { width: 100%; padding: 10px 8px; border: 2px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 0.95rem; background: white; }
+        .actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        .btn-main { padding: 14px; border: none; border-radius: 12px; cursor: pointer; color: white; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; }
+        .btn-monthly { background-color: var(--accent-blue); }
         .btn-partial { background-color: var(--accent-green); }
-
-        /* Historial */
-        ul { list-style: none; padding: 0; margin: 20px 0; }
-        li { background: #fff; padding: 12px 8px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; border: 1px solid #eee; }
-        .order-controls { display: flex; flex-direction: column; margin-right: 8px; gap: 4px; }
-        .btn-order { background: #f0f0f0; border: none; border-radius: 6px; width: 38px; height: 38px; font-size: 1.2rem; }
-        
-        .item-content { flex-grow: 1; overflow: hidden; }
-        .item-amount { font-size: 1.4rem; font-weight: 800; display: block; color: #1a1a1a; }
-        .item-meta { font-size: 0.8rem; white-space: nowrap; }
-        
-        .btn-delete { background: #fee; color: var(--danger); border: none; font-size: 1.6rem; width: 45px; height: 45px; border-radius: 12px; margin-left: 5px; }
-
-        #fileInput { display: none; }
+        .history-container { flex-grow: 1; overflow-y: auto; padding-right: 5px; border-top: 1px solid #eee; }
+        ul { list-style: none; padding: 0; margin: 10px 0; }
+        li { background: #fff; padding: 10px; border-radius: 12px; margin-bottom: 8px; display: flex; align-items: center; border: 1px solid #eee; }
+        .order-controls { display: flex; flex-direction: column; margin-right: 8px; gap: 2px; }
+        .btn-order { background: #f0f0f0; border: none; border-radius: 4px; width: 34px; height: 32px; font-size: 1rem; }
+        .item-content { flex-grow: 1; }
+        .item-header { display: flex; align-items: center; gap: 8px; }
+        .item-amount { font-size: 1.2rem; font-weight: 800; color: #1a1a1a; }
+        .badge-who { font-weight: 900; color: white; background: var(--primary); padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; text-transform: uppercase; }
+        .item-meta { font-size: 0.75rem; color: #777; margin-top: 2px; }
+        .btn-delete { background: #fee; color: var(--danger); border: none; font-size: 1.4rem; width: 40px; height: 40px; border-radius: 10px; }
+        .history-container::-webkit-scrollbar { width: 4px; }
+        .history-container::-webkit-scrollbar-thumb { background: var(--gray); border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="top-panel">
-        <button class="btn-small btn-sync" onclick="syncFromGitHub()">🔄 SINCRONIZAR GITHUB</button>
-        <div class="file-actions">
-            <button class="btn-small btn-export" onclick="exportToJSON()">💾 EXPORTAR</button>
-            <button class="btn-small btn-import" onclick="document.getElementById('fileInput').click()">📂 IMPORTAR</button>
-            <input type="file" id="fileInput" accept=".json" onchange="importFromJSON(event)">
+    <div class="header-fixed">
+        <div class="top-panel">
+            <div class="file-actions">
+                <button class="btn-small btn-sync" onclick="syncFromGitHub()">🔄 SYNC GITHUB</button>
+                <button class="btn-small btn-export" onclick="exportToJSON()">💾 EXPORTAR JSON</button>
+            </div>
+        </div>
+        <div class="balance-card">
+            <div class="balance-label">Capital Pendiente</div>
+            <div id="balanceDisplay" class="balance-display">175.000,00€</div>
+        </div>
+        <div class="totals-panel">
+            <div class="total-box" style="border-right: 1px solid #ccc;">
+                <div class="total-name">Pagado por Edu</div>
+                <div id="totalEdu" class="total-value">0,00€</div>
+            </div>
+            <div class="total-box">
+                <div class="total-name">Pagado por Papas</div>
+                <div id="totalPapas" class="total-value">0,00€</div>
+            </div>
+        </div>
+        <div id="inputSection">
+            <div class="input-group">
+                <div><label>Fecha</label><input type="date" id="dateInput"></div>
+                <div><label>Importe (€)</label><input type="number" id="paymentInput" placeholder="0.00" step="any"></div>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>Quién realiza el pago</label>
+                <select id="whoInput">
+                    <option value="Edu">Edu</option>
+                    <option value="Papas">Papas</option>
+                </select>
+            </div>
+            <div class="actions-row">
+                <button class="btn-main btn-monthly" onclick="addPayment('MENSUAL')">MENSUAL</button>
+                <button class="btn-main btn-partial" onclick="addPayment('PARCIAL')">PARCIAL</button>
+            </div>
         </div>
     </div>
-
-    <div id="setupSection" style="display: none;">
-        <label>Deuda Inicial</label>
-        <input type="number" id="initialInput" placeholder="0.00">
-        <button class="btn-main" style="background: var(--primary);" onclick="setInitial()">FIJAR DEUDA</button>
-    </div>
-
-    <div class="balance-card">
-        <div class="balance-label">Pendiente Actual</div>
-        <div id="balanceDisplay" class="balance-display">---€</div>
-    </div>
-
-    <div id="actionSection" style="display: none;">
-        <div class="input-group">
-            <div><label>Fecha</label><input type="date" id="dateInput"></div>
-            <div><label>Importe</label><input type="number" id="paymentInput" placeholder="0.00"></div>
-        </div>
-        
-        <button class="btn-main btn-monthly" onclick="addPayment('MENSUAL')">PAGAR MENSUALIDAD</button>
-        <button class="btn-main btn-partial" onclick="addPayment('APORTACIÓN PARCIAL')">APORTACIÓN PARCIAL</button>
-
+    <div class="history-container">
         <ul id="historyList"></ul>
     </div>
 </div>
 
 <script>
     const GITHUB_JSON_URL = "https://raw.githubusercontent.com/antoniodetm/prestamo/main/datos.json";
-    let initialDebt = 0;
+    const INITIAL_BASE = 175000;
     let payments = [];
 
     window.onload = () => {
         syncFromGitHub(true); 
         const savedData = localStorage.getItem('loanData');
-        if (savedData && !initialDebt) loadData(JSON.parse(savedData));
+        if (savedData) loadData(JSON.parse(savedData));
+        else updateUI();
         document.getElementById('dateInput').valueAsDate = new Date();
     };
 
@@ -108,34 +112,29 @@
             saveData();
             if (!isAuto) alert("¡Sincronizado!");
         } catch (err) {
-            if (!isAuto) alert("Error GitHub");
-            if (!localStorage.getItem('loanData')) document.getElementById('setupSection').style.display = 'block';
+            updateUI();
         }
     }
 
     function loadData(data) {
-        if (!data || !data.initialDebt) return;
-        initialDebt = data.initialDebt;
-        payments = data.payments || [];
-        document.getElementById('setupSection').style.display = 'none';
-        document.getElementById('actionSection').style.display = 'block';
+        // Asegurar que los importes sean números al cargar
+        payments = (data.payments || []).map(p => ({...p, amount: parseFloat(p.amount)}));
         updateUI();
     }
 
-    function setInitial() {
-        const val = parseFloat(document.getElementById('initialInput').value);
-        if (isNaN(val)) return;
-        initialDebt = val;
-        loadData({ initialDebt, payments: [] });
-        saveData();
-    }
-
     function addPayment(type) {
-        const amount = parseFloat(document.getElementById('paymentInput').value);
+        const input = document.getElementById('paymentInput');
+        const amount = parseFloat(input.value);
         const date = document.getElementById('dateInput').value;
-        if (isNaN(amount) || !date) return;
-        payments.unshift({ id: Date.now(), amount, date, type });
-        document.getElementById('paymentInput').value = "";
+        const who = document.getElementById('whoInput').value;
+        
+        if (isNaN(amount) || amount <= 0 || !date) {
+            alert("Introduce un importe válido");
+            return;
+        }
+        
+        payments.unshift({ id: Date.now(), amount: amount, date: date, type: type, who: who });
+        input.value = "";
         saveData();
         updateUI();
     }
@@ -149,7 +148,7 @@
     }
 
     function deletePayment(index) {
-        if(confirm("¿Borrar?")) {
+        if(confirm("¿Eliminar movimiento?")) {
             payments.splice(index, 1);
             saveData();
             updateUI();
@@ -157,14 +156,29 @@
     }
 
     function saveData() {
-        localStorage.setItem('loanData', JSON.stringify({ initialDebt, payments }));
+        localStorage.setItem('loanData', JSON.stringify({ initialDebt: INITIAL_BASE, payments }));
+    }
+
+    function formatEuro(val) {
+        return val.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "€";
     }
 
     function updateUI() {
-        const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
-        const currentBalance = initialDebt - totalPaid;
-        const display = document.getElementById('balanceDisplay');
-        display.innerText = Math.max(0, currentBalance).toLocaleString('de-DE', {minimumFractionDigits: 2}) + "€";
+        let sumEdu = 0;
+        let sumPapas = 0;
+        
+        payments.forEach(p => {
+            const val = parseFloat(p.amount) || 0;
+            if (p.who === 'Edu') sumEdu += val;
+            else if (p.who === 'Papas') sumPapas += val;
+        });
+
+        const totalPaid = sumEdu + sumPapas;
+        const currentBalance = INITIAL_BASE - totalPaid;
+        
+        document.getElementById('balanceDisplay').innerText = formatEuro(Math.max(0, currentBalance));
+        document.getElementById('totalEdu').innerText = formatEuro(sumEdu);
+        document.getElementById('totalPapas').innerText = formatEuro(sumPapas);
         
         const list = document.getElementById('historyList');
         list.innerHTML = "";
@@ -176,10 +190,12 @@
                     <button class="btn-order" onclick="moveItem(${index}, 1)">▼</button>
                 </div>
                 <div class="item-content">
-                    <span class="item-amount">-${p.amount.toFixed(2)}€</span>
+                    <div class="item-header">
+                        <span class="item-amount">-${parseFloat(p.amount).toLocaleString('de-DE', {minimumFractionDigits:2})}€</span>
+                        <span class="badge-who">${p.who || 'Edu'}</span>
+                    </div>
                     <div class="item-meta">
-                        <span style="color:var(--accent-blue); font-weight:bold">${p.type}</span> | 
-                        <span style="color:#888">${p.date.split('-').reverse().join('/')}</span>
+                        <span style="color:var(--accent-blue); font-weight:bold">${p.type}</span> | ${p.date.split('-').reverse().join('/')}
                     </div>
                 </div>
                 <button class="btn-delete" onclick="deletePayment(${index})">×</button>
@@ -189,24 +205,14 @@
     }
 
     function exportToJSON() {
-        const dataStr = JSON.stringify({ initialDebt, payments }, null, 2);
+        saveData();
+        const dataStr = localStorage.getItem('loanData');
         const blob = new Blob([dataStr], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
         link.download = `amortizacion.json`;
         link.click();
-    }
-
-    function importFromJSON(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try { loadData(JSON.parse(e.target.result)); saveData(); } 
-            catch (err) { alert("Error"); }
-        };
-        reader.readAsText(file);
     }
 </script>
 </body>
