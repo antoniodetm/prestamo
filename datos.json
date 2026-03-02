@@ -1,4 +1,11 @@
 {
   "initialDebt": 150000,
-  "payments": []
+  "payments": [
+    {
+      "id": 1772478995627,
+      "amount": 3000,
+      "date": "2026-03-02",
+      "type": "MENSUAL"
+    }
+  ]
 }
