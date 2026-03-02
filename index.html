@@ -3,35 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Loan Manager Pro - Botones Arriba</title>
+    <title>Mi Préstamo - Auto Sync</title>
     <style>
         :root { --primary: #2c3e50; --accent-blue: #3498db; --accent-green: #27ae60; --danger: #e74c3c; --github: #24292e; --gray: #95a5a6; --bg: #f0f3f5; }
         
         body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 10px; background-color: var(--bg); }
         .container { background: white; padding: 1.2rem; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin: auto; box-sizing: border-box; }
         
-        /* Panel de Control Superior (Sync y Archivos) */
-        .top-panel { background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #e1e4e8; }
+        /* Panel Superior */
+        .top-panel { background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #e1e4e8; text-align: center; }
         .file-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
         
-        /* Botones de control */
-        .btn-small { padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 0.8rem; color: white; transition: 0.2s; }
-        .btn-sync { background-color: var(--github); width: 100%; }
+        .btn-small { padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 0.85rem; color: white; transition: 0.2s; }
+        .btn-sync { background-color: var(--github); width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-export { background-color: var(--gray); }
         .btn-import { background-color: var(--gray); }
 
         /* Dashboard */
         .balance-card { background: var(--primary); color: white; padding: 25px 15px; border-radius: 18px; text-align: center; margin-bottom: 20px; }
         .balance-label { font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 2px; }
-        .balance-display { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-top: 5px; }
+        .balance-display { font-size: 3.2rem; font-weight: 800; line-height: 1.1; margin-top: 5px; }
 
         #setupSection { background: #fff; padding: 15px; border: 2px dashed var(--gray); border-radius: 15px; margin-bottom: 20px; text-align: center; }
         
-        /* Inputs y Botones de Pago */
         label { display: block; margin-bottom: 4px; font-weight: 700; font-size: 0.75rem; color: var(--gray); text-transform: uppercase; }
         input { width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 1.1rem; margin-bottom: 12px; }
         
-        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 15px; cursor: pointer; color: white; font-weight: 800; font-size: 1rem; margin-top: 5px; }
+        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 15px; cursor: pointer; color: white; font-weight: 800; font-size: 1.1rem; margin-top: 5px; }
         .btn-monthly { background-color: var(--accent-blue); margin-bottom: 8px; }
         .btn-partial { background-color: var(--accent-green); }
 
@@ -39,11 +37,11 @@
         ul { list-style: none; padding: 0; margin: 20px 0; }
         li { background: #fff; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; border: 1px solid #eee; }
         .order-controls { display: flex; flex-direction: column; margin-right: 12px; gap: 4px; }
-        .btn-order { background: #f0f0f0; border: none; border-radius: 6px; width: 40px; height: 35px; font-size: 1.1rem; }
+        .btn-order { background: #f0f0f0; border: none; border-radius: 6px; width: 42px; height: 38px; font-size: 1.2rem; }
         
         .item-content { flex-grow: 1; }
-        .item-amount { font-size: 1.4rem; font-weight: 800; display: block; color: #1a1a1a; }
-        .btn-delete { background: #fee; color: var(--danger); border: none; font-size: 1.5rem; width: 45px; height: 45px; border-radius: 10px; }
+        .item-amount { font-size: 1.5rem; font-weight: 800; display: block; color: #1a1a1a; }
+        .btn-delete { background: #fee; color: var(--danger); border: none; font-size: 1.6rem; width: 48px; height: 48px; border-radius: 12px; }
 
         #fileInput { display: none; }
     </style>
@@ -52,26 +50,26 @@
 
 <div class="container">
     <div class="top-panel">
-        <label>GitHub Sync (usuario/repo/rama/archivo.json)</label>
-        <input type="text" id="repoPath" placeholder="ej: pepe/datos/main/pago.json" style="font-size: 0.85rem; padding: 10px; margin-bottom: 8px;">
-        <button class="btn-small btn-sync" onclick="syncFromGitHub()">🔄 SYNC DESDE CLOUD</button>
+        <button class="btn-small btn-sync" onclick="syncFromGitHub()">
+            🔄 SINCRONIZAR CON GITHUB
+        </button>
         
         <div class="file-actions">
-            <button class="btn-small btn-export" onclick="exportToJSON()">💾 EXPORTAR JSON</button>
-            <button class="btn-small btn-import" onclick="document.getElementById('fileInput').click()">📂 IMPORTAR JSON</button>
+            <button class="btn-small btn-export" onclick="exportToJSON()">💾 EXPORTAR</button>
+            <button class="btn-small btn-import" onclick="document.getElementById('fileInput').click()">📂 IMPORTAR</button>
             <input type="file" id="fileInput" accept=".json" onchange="importFromJSON(event)">
         </div>
     </div>
 
-    <div id="setupSection">
+    <div id="setupSection" style="display: none;">
         <label>Deuda Inicial</label>
         <input type="number" id="initialInput" placeholder="0.00">
         <button class="btn-main" style="background: var(--primary);" onclick="setInitial()">FIJAR DEUDA</button>
     </div>
 
     <div class="balance-card">
-        <div class="balance-label">Pendiente</div>
-        <div id="balanceDisplay" class="balance-display">0.00€</div>
+        <div class="balance-label">Pendiente Actual</div>
+        <div id="balanceDisplay" class="balance-display">---€</div>
     </div>
 
     <div id="actionSection" style="display: none;">
@@ -80,7 +78,7 @@
             <div><label>Importe</label><input type="number" id="paymentInput" placeholder="0.00"></div>
         </div>
         
-        <button class="btn-main btn-monthly" onclick="addPayment('MENSUAL')">REGISTRAR MENSUALIDAD</button>
+        <button class="btn-main btn-monthly" onclick="addPayment('MENSUAL')">PAGAR MENSUALIDAD</button>
         <button class="btn-main btn-partial" onclick="addPayment('APORTACIÓN PARCIAL')">APORTACIÓN PARCIAL</button>
 
         <ul id="historyList"></ul>
@@ -88,33 +86,46 @@
 </div>
 
 <script>
+    // URL FIJA DE TU REPOSITORIO
+    const GITHUB_JSON_URL = "https://raw.githubusercontent.com/antoniodetm/prestamo/main/datos.json";
+
     let initialDebt = 0;
     let payments = [];
 
     window.onload = () => {
-        const savedPath = localStorage.getItem('githubPath');
-        if (savedPath) document.getElementById('repoPath').value = savedPath;
+        // 1. Intentar cargar desde GitHub automáticamente
+        syncFromGitHub(true); 
+        
+        // 2. Si falla o no hay internet, cargar lo último guardado localmente
         const savedData = localStorage.getItem('loanData');
-        if (savedData) loadData(JSON.parse(savedData));
+        if (savedData && !initialDebt) loadData(JSON.parse(savedData));
+
         document.getElementById('dateInput').valueAsDate = new Date();
     };
 
-    async function syncFromGitHub() {
-        const path = document.getElementById('repoPath').value;
-        if (!path) return alert("Ruta vacía");
-        const url = `https://raw.githubusercontent.com/${path}?nocache=${Date.now()}`;
+    async function syncFromGitHub(isAuto = false) {
         try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error("Error de red");
+            // Añadimos un timestamp para evitar la caché del navegador
+            const response = await fetch(GITHUB_JSON_URL + '?v=' + Date.now());
+            if (!response.ok) throw new Error("Archivo no disponible en GitHub");
+            
             const data = await response.json();
             loadData(data);
             saveData();
-            localStorage.setItem('githubPath', path);
-            alert("¡Sincronizado!");
-        } catch (err) { alert("Error: " + err.message); }
+            if (!isAuto) alert("¡Sincronizado desde GitHub!");
+        } catch (err) {
+            console.log("Error en sync:", err.message);
+            if (!isAuto) alert("Error al conectar con GitHub");
+            
+            // Si es auto-carga y no hay datos, mostrar configuración
+            if (!localStorage.getItem('loanData')) {
+                document.getElementById('setupSection').style.display = 'block';
+            }
+        }
     }
 
     function loadData(data) {
+        if (!data || !data.initialDebt) return;
         initialDebt = data.initialDebt;
         payments = data.payments || [];
         document.getElementById('setupSection').style.display = 'none';
@@ -149,7 +160,7 @@
     }
 
     function deletePayment(index) {
-        if(confirm("¿Borrar?")) {
+        if(confirm("¿Borrar este registro?")) {
             payments.splice(index, 1);
             saveData();
             updateUI();
@@ -192,7 +203,7 @@
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `amortizacion_${new Date().toISOString().slice(0,10)}.json`;
+        link.download = `prestamo_${new Date().toISOString().slice(0,10)}.json`;
         link.click();
     }
 
@@ -201,10 +212,8 @@
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
-            try {
-                loadData(JSON.parse(e.target.result));
-                saveData();
-            } catch (err) { alert("Error en el archivo"); }
+            try { loadData(JSON.parse(e.target.result)); saveData(); } 
+            catch (err) { alert("Error en el archivo"); }
         };
         reader.readAsText(file);
     }
