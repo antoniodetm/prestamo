@@ -3,217 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Préstamo - Decimales Corregidos</title>
+    <title>Hipoteca - Control Total y GitHub</title>
     <style>
         :root { --primary: #2c3e50; --accent-blue: #3498db; --accent-green: #27ae60; --danger: #e74c3c; --github: #24292e; --gray: #95a5a6; --bg: #f0f3f5; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 10px; background-color: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .container { background: white; padding: 1rem; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin: auto; box-sizing: border-box; display: flex; flex-direction: column; max-height: 98vh; }
-        .header-fixed { flex-shrink: 0; }
-        .top-panel { background: #f8f9fa; padding: 10px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #e1e4e8; }
-        .file-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-        .btn-small { padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 0.75rem; color: white; }
-        .btn-sync { background-color: var(--github); }
-        .btn-export { background-color: var(--gray); }
-        .balance-card { background: var(--primary); color: white; padding: 15px 10px; border-radius: 15px; text-align: center; margin-bottom: 15px; }
-        .balance-label { font-size: 0.7rem; opacity: 0.7; text-transform: uppercase; font-weight: bold; }
-        .balance-display { font-size: 2rem; font-weight: 800; margin-top: 5px; }
-        .totals-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: #f0f3f5; padding: 10px; border-radius: 12px; border: 1px solid #e1e4e8; }
-        .total-box { text-align: center; }
-        .total-name { font-size: 0.65rem; font-weight: bold; color: var(--gray); text-transform: uppercase; }
-        .total-value { font-size: 1rem; font-weight: 800; color: var(--primary); }
+        
+        /* Panel Próximo Pago */
+        .next-payment-box { background: #ebf5ff; border: 2px solid var(--accent-blue); padding: 10px; border-radius: 15px; margin-bottom: 10px; text-align: center; }
+        .next-payment-title { font-size: 0.65rem; font-weight: bold; color: var(--accent-blue); text-transform: uppercase; }
+        .next-payment-total { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin: 2px 0; }
+        .next-payment-split { font-size: 0.75rem; color: #555; display: flex; justify-content: center; gap: 8px; border-top: 1px solid #d0e3f5; padding-top: 4px; }
+
+        .balance-card { background: var(--primary); color: white; padding: 12px; border-radius: 15px; text-align: center; margin-bottom: 8px; }
+        .balance-display { font-size: 1.8rem; font-weight: 800; }
+        
+        .totals-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; background: #f8f9fa; padding: 8px; border-radius: 12px; border: 1px solid #eee; }
+        .total-value { font-size: 0.9rem; font-weight: 800; color: var(--primary); }
+        
         .input-group { display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; margin-bottom: 8px; }
-        label { display: block; margin-bottom: 2px; font-weight: 700; font-size: 0.65rem; color: var(--gray); text-transform: uppercase; }
-        input, select { width: 100%; padding: 10px 8px; border: 2px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 0.95rem; background: white; }
-        .actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        .btn-main { padding: 14px; border: none; border-radius: 12px; cursor: pointer; color: white; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; }
+        label { display: block; font-weight: 700; font-size: 0.6rem; color: var(--gray); text-transform: uppercase; }
+        input, select { width: 100%; padding: 8px; border: 2px solid #ddd; border-radius: 8px; font-size: 0.85rem; }
+        
+        .actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .btn-main { padding: 12px; border: none; border-radius: 10px; cursor: pointer; color: white; font-weight: 800; font-size: 0.75rem; }
         .btn-monthly { background-color: var(--accent-blue); }
         .btn-partial { background-color: var(--accent-green); }
-        .history-container { flex-grow: 1; overflow-y: auto; padding-right: 5px; border-top: 1px solid #eee; }
-        ul { list-style: none; padding: 0; margin: 10px 0; }
-        li { background: #fff; padding: 10px; border-radius: 12px; margin-bottom: 8px; display: flex; align-items: center; border: 1px solid #eee; }
-        .order-controls { display: flex; flex-direction: column; margin-right: 8px; gap: 2px; }
-        .btn-order { background: #f0f0f0; border: none; border-radius: 4px; width: 34px; height: 32px; font-size: 1rem; }
+        
+        /* Botones de Archivo/GitHub */
+        .file-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 10px; }
+        .btn-file { padding: 8px; font-size: 0.65rem; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; color: white; }
+        .btn-json { background: var(--gray); }
+        .btn-github { background: var(--github); }
+
+        .history-container { flex-grow: 1; overflow-y: auto; border-top: 1px solid #eee; }
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { background: #fff; padding: 10px; border-radius: 12px; margin-top: 8px; display: flex; align-items: center; border: 1px solid #eee; }
+        
+        .order-controls { display: flex; flex-direction: column; gap: 2px; margin-right: 8px; }
+        .btn-order { background: #f0f0f0; border: none; border-radius: 4px; padding: 4px; cursor: pointer; font-size: 0.6rem; }
+        
         .item-content { flex-grow: 1; }
-        .item-header { display: flex; align-items: center; gap: 8px; }
-        .item-amount { font-size: 1.2rem; font-weight: 800; color: #1a1a1a; }
-        .badge-who { font-weight: 900; color: white; background: var(--primary); padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; text-transform: uppercase; }
-        .item-meta { font-size: 0.75rem; color: #777; margin-top: 2px; }
-        .btn-delete { background: #fee; color: var(--danger); border: none; font-size: 1.4rem; width: 40px; height: 40px; border-radius: 10px; }
-        .history-container::-webkit-scrollbar { width: 4px; }
-        .history-container::-webkit-scrollbar-thumb { background: var(--gray); border-radius: 10px; }
+        .item-amount-paid { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+        .item-detail-row { display: flex; gap: 8px; font-size: 0.7rem; margin-top: 3px; border-top: 1px dashed #eee; padding-top: 3px; }
+        .item-sub { font-size: 0.65rem; color: #777; }
+        .btn-delete { background: #fff0f0; color: var(--danger); border: none; font-size: 1.2rem; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header-fixed">
-        <div class="top-panel">
-            <div class="file-actions">
-                <button class="btn-small btn-sync" onclick="syncFromGitHub()">🔄 SYNC GITHUB</button>
-                <button class="btn-small btn-export" onclick="exportToJSON()">💾 EXPORTAR JSON</button>
+        <div class="file-actions">
+            <button class="btn-file btn-json" onclick="exportToJSON()">EXPORTAR JSON</button>
+            <button class="btn-file btn-json" onclick="importJSON()">ABRIR JSON</button>
+            <button class="btn-file btn-github" onclick="syncGitHub()">GITHUB SYNC</button>
+        </div>
+
+        <div class="next-payment-box">
+            <div class="next-payment-title">Próximo Vencimiento (<span id="nextDate">--/--/--</span>)</div>
+            <div id="nextPaymentTotal" class="next-payment-total">0,00€</div>
+            <div class="next-payment-split">
+                <span>Principal: <b id="nextPrincipal" style="color:var(--accent-green)">0,00€</b></span>
+                <span>Interés: <b id="nextInterest" style="color:var(--danger)">0,00€</b></span>
             </div>
         </div>
+
         <div class="balance-card">
-            <div class="balance-label">Capital Pendiente</div>
+            <div style="font-size: 0.6rem; opacity: 0.8; font-weight: bold;">CAPITAL PENDIENTE</div>
             <div id="balanceDisplay" class="balance-display">175.000,00€</div>
         </div>
+
         <div class="totals-panel">
-            <div class="total-box" style="border-right: 1px solid #ccc;">
-                <div class="total-name">Pagado por Edu</div>
+            <div style="text-align: center; border-right: 1px solid #ddd;">
+                <div style="font-size: 0.55rem; color: var(--gray);">TOTAL EDU</div>
                 <div id="totalEdu" class="total-value">0,00€</div>
             </div>
-            <div class="total-box">
-                <div class="total-name">Pagado por Papas</div>
+            <div style="text-align: center;">
+                <div style="font-size: 0.55rem; color: var(--gray);">TOTAL PAPAS</div>
                 <div id="totalPapas" class="total-value">0,00€</div>
             </div>
         </div>
-        <div id="inputSection">
-            <div class="input-group">
-                <div><label>Fecha</label><input type="date" id="dateInput"></div>
-                <div><label>Importe (€)</label><input type="number" id="paymentInput" placeholder="0.00" step="any"></div>
-            </div>
-            <div style="margin-bottom: 10px;">
-                <label>Quién realiza el pago</label>
-                <select id="whoInput">
-                    <option value="Edu">Edu</option>
-                    <option value="Papas">Papas</option>
-                </select>
-            </div>
-            <div class="actions-row">
-                <button class="btn-main btn-monthly" onclick="addPayment('MENSUAL')">MENSUAL</button>
-                <button class="btn-main btn-partial" onclick="addPayment('PARCIAL')">PARCIAL</button>
-            </div>
+
+        <div class="input-group">
+            <div><label>Fecha</label><input type="date" id="dateInput"></div>
+            <div><label>Importe Pago</label><input type="number" id="paymentInput" step="any" inputmode="decimal"></div>
+        </div>
+        <div style="margin-bottom: 8px;">
+            <label>Pagado por</label>
+            <select id="whoInput"><option value="Edu">Edu</option><option value="Papas">Papas</option></select>
+        </div>
+        <div class="actions-row">
+            <button class="btn-main btn-monthly" onclick="addPayment('MENSUAL')">PAGO MENSUAL</button>
+            <button class="btn-main btn-partial" onclick="addPayment('PARCIAL')">AMORT. PARCIAL</button>
         </div>
     </div>
+
     <div class="history-container">
         <ul id="historyList"></ul>
     </div>
 </div>
 
 <script>
-    const GITHUB_JSON_URL = "https://raw.githubusercontent.com/antoniodetm/prestamo/main/datos.json";
     const INITIAL_BASE = 175000;
+    const TIPO_FIJO = 0.0155; 
     let payments = [];
 
     window.onload = () => {
-        syncFromGitHub(true); 
         const savedData = localStorage.getItem('loanData');
-        if (savedData) loadData(JSON.parse(savedData));
-        else updateUI();
-        document.getElementById('dateInput').valueAsDate = new Date();
+        if (savedData) payments = JSON.parse(savedData).payments || [];
+        setUltimoDiaMes();
+        updateUI();
     };
 
-    async function syncFromGitHub(isAuto = false) {
-        try {
-            const response = await fetch(GITHUB_JSON_URL + '?v=' + Date.now());
-            if (!response.ok) throw new Error();
-            const data = await response.json();
-            loadData(data);
-            saveData();
-            if (!isAuto) alert("¡Sincronizado!");
-        } catch (err) {
-            updateUI();
-        }
-    }
-
-    function loadData(data) {
-        // Asegurar que los importes sean números al cargar
-        payments = (data.payments || []).map(p => ({...p, amount: parseFloat(p.amount)}));
-        updateUI();
+    function setUltimoDiaMes() {
+        const hoy = new Date();
+        const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+        document.getElementById('dateInput').valueAsDate = ultimoDia;
+        document.getElementById('nextDate').innerText = ultimoDia.toLocaleDateString('es-ES');
     }
 
     function addPayment(type) {
         const input = document.getElementById('paymentInput');
-        const amount = parseFloat(input.value);
+        const val = parseFloat(input.value);
         const date = document.getElementById('dateInput').value;
         const who = document.getElementById('whoInput').value;
-        
-        if (isNaN(amount) || amount <= 0 || !date) {
-            alert("Introduce un importe válido");
-            return;
+        if (isNaN(val) || val <= 0) return alert("Importe no válido");
+
+        const saldoAntes = calcularSaldoActual();
+        let capNeto = val;
+        let intMes = 0;
+
+        if (type === 'MENSUAL') {
+            intMes = (saldoAntes * TIPO_FIJO) / 12;
+            capNeto = val - intMes;
         }
-        
-        payments.unshift({ id: Date.now(), amount: amount, date: date, type: type, who: who });
+
+        payments.unshift({ id: Date.now(), amount: capNeto, fullCuota: val, intereses: intMes, date, type, who });
         input.value = "";
         saveData();
         updateUI();
     }
 
-    function moveItem(index, direction) {
-        const newIndex = index + direction;
-        if (newIndex < 0 || newIndex >= payments.length) return;
-        [payments[index], payments[newIndex]] = [payments[newIndex], payments[index]];
-        saveData();
-        updateUI();
-    }
-
-    function deletePayment(index) {
-        if(confirm("¿Eliminar movimiento?")) {
-            payments.splice(index, 1);
-            saveData();
-            updateUI();
-        }
-    }
-
-    function saveData() {
-        localStorage.setItem('loanData', JSON.stringify({ initialDebt: INITIAL_BASE, payments }));
-    }
-
-    function formatEuro(val) {
-        return val.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "€";
+    function calcularSaldoActual() {
+        return INITIAL_BASE - payments.reduce((acc, p) => acc + (p.amount || 0), 0);
     }
 
     function updateUI() {
-        let sumEdu = 0;
-        let sumPapas = 0;
+        const saldo = calcularSaldoActual();
+        document.getElementById('balanceDisplay').innerText = formatEuro(saldo);
         
-        payments.forEach(p => {
-            const val = parseFloat(p.amount) || 0;
-            if (p.who === 'Edu') sumEdu += val;
-            else if (p.who === 'Papas') sumPapas += val;
-        });
-
-        const totalPaid = sumEdu + sumPapas;
-        const currentBalance = INITIAL_BASE - totalPaid;
-        
-        document.getElementById('balanceDisplay').innerText = formatEuro(Math.max(0, currentBalance));
+        const sumEdu = payments.filter(p => p.who === 'Edu').reduce((acc, p) => acc + (p.fullCuota || p.amount || 0), 0);
+        const sumPapas = payments.filter(p => p.who === 'Papas').reduce((acc, p) => acc + (p.fullCuota || p.amount || 0), 0);
         document.getElementById('totalEdu').innerText = formatEuro(sumEdu);
         document.getElementById('totalPapas').innerText = formatEuro(sumPapas);
-        
+
+        const pInt = (saldo * TIPO_FIJO) / 12;
+        const uCuota = payments.find(p => p.type === 'MENSUAL')?.fullCuota || 608.20;
+        document.getElementById('nextPaymentTotal').innerText = formatEuro(uCuota);
+        document.getElementById('nextInterest').innerText = formatEuro(pInt);
+        document.getElementById('nextPrincipal').innerText = formatEuro(uCuota - pInt);
+
         const list = document.getElementById('historyList');
         list.innerHTML = "";
-        payments.forEach((p, index) => {
+        payments.forEach((p, i) => {
             const li = document.createElement('li');
             li.innerHTML = `
                 <div class="order-controls">
-                    <button class="btn-order" onclick="moveItem(${index}, -1)">▲</button>
-                    <button class="btn-order" onclick="moveItem(${index}, 1)">▼</button>
+                    <button class="btn-order" onclick="moveItem(${i}, -1)">▲</button>
+                    <button class="btn-order" onclick="moveItem(${i}, 1)">▼</button>
                 </div>
                 <div class="item-content">
-                    <div class="item-header">
-                        <span class="item-amount">-${parseFloat(p.amount).toLocaleString('de-DE', {minimumFractionDigits:2})}€</span>
-                        <span class="badge-who">${p.who || 'Edu'}</span>
-                    </div>
-                    <div class="item-meta">
-                        <span style="color:var(--accent-blue); font-weight:bold">${p.type}</span> | ${p.date.split('-').reverse().join('/')}
+                    <div class="item-amount-paid">${formatEuro(p.fullCuota || p.amount)}</div>
+                    <div class="item-sub"><b>${p.type}</b> | ${p.date.split('-').reverse().join('/')} | Por: ${p.who}</div>
+                    <div class="item-detail-row">
+                        <span style="color:var(--accent-green)">Ppal: <b>${formatEuro(p.amount)}</b></span>
+                        ${p.intereses > 0 ? `<span style="color:var(--danger)">Int: <b>${formatEuro(p.intereses)}</b></span>` : '<span>Extra</span>'}
                     </div>
                 </div>
-                <button class="btn-delete" onclick="deletePayment(${index})">×</button>
+                <button class="btn-delete" onclick="deleteItem(${i})">×</button>
             `;
             list.appendChild(li);
         });
     }
 
-    function exportToJSON() {
-        saveData();
-        const dataStr = localStorage.getItem('loanData');
-        const blob = new Blob([dataStr], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `amortizacion.json`;
-        link.click();
+    function moveItem(index, direction) {
+        const newIndex = index + direction;
+        if (newIndex >= 0 && newIndex < payments.length) {
+            [payments[index], payments[newIndex]] = [payments[newIndex], payments[index]];
+            saveData(); updateUI();
+        }
     }
+
+    function exportToJSON() {
+        const blob = new Blob([JSON.stringify({payments})], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = "hipoteca.json"; a.click();
+    }
+
+    function importJSON() {
+        const input = document.createElement('input'); input.type = 'file';
+        input.onchange = e => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = ev => { payments = JSON.parse(ev.target.result).payments || []; saveData(); updateUI(); };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    async function syncGitHub() {
+        const REPO = "edu-m-l/amortizacion";
+        const FILE_PATH = "datos.json";
+        const url = `https://raw.githubusercontent.com/${REPO}/main/${FILE_PATH}?t=${Date.now()}`;
+        try {
+            const res = await fetch(url);
+            if(res.ok) { 
+                const data = await res.json(); 
+                payments = data.payments || []; 
+                saveData(); updateUI(); 
+                alert("Sincronizado con GitHub ✅");
+            }
+        } catch(e) { alert("Error al conectar con GitHub"); }
+    }
+
+    function deleteItem(i) { if(confirm("¿Borrar?")) { payments.splice(i,1); saveData(); updateUI(); } }
+    function saveData() { localStorage.setItem('loanData', JSON.stringify({ payments })); }
+    function formatEuro(v) { return v.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + "€"; }
 </script>
 </body>
 </html>
