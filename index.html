@@ -9,7 +9,6 @@
         body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 10px; background-color: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .container { background: white; padding: 1rem; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin: auto; box-sizing: border-box; display: flex; flex-direction: column; max-height: 98vh; }
         
-        /* Panel Próximo Pago */
         .next-payment-box { background: #ebf5ff; border: 2px solid var(--accent-blue); padding: 10px; border-radius: 15px; margin-bottom: 10px; text-align: center; }
         .next-payment-title { font-size: 0.65rem; font-weight: bold; color: var(--accent-blue); text-transform: uppercase; }
         .next-payment-total { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin: 2px 0; }
@@ -219,29 +218,26 @@
     }
 
     async function syncGitHub() {
-        const REPO = "edu-m-l/amortizacion";
-        const FILE_PATH = "datos.json";
-        // Usamos la API para evitar la caché del CDN de rawgithub
-        const url = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
+        // URL directa a tu JSON en GitHub Pages
+        const url = `https://antoniodetm.github.io/prestamo/datos.json?t=${Date.now()}`;
 
         try {
-            const res = await fetch(url, {
-                headers: { 'Accept': 'application/vnd.github.v3.raw' }
-            });
-
+            const res = await fetch(url);
             if(res.ok) { 
                 const data = await res.json(); 
                 if (data && data.payments) {
                     payments = data.payments; 
                     saveData(); 
                     updateUI(); 
-                    alert("Sincronizado con GitHub ✅");
+                    alert("Datos cargados desde GitHub ✅");
+                } else {
+                    alert("El archivo JSON existe pero el formato es incorrecto.");
                 }
             } else {
-                alert("No se pudo obtener el archivo. Revisa que sea público y el nombre sea correcto.");
+                alert("No se pudo acceder al archivo en GitHub (Error " + res.status + ")");
             }
         } catch(e) { 
-            alert("Error al conectar con GitHub. Revisa tu conexión."); 
+            alert("Error de conexión. Verifica que el repositorio sea público."); 
         }
     }
 
