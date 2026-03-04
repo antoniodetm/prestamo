@@ -30,7 +30,6 @@
         .btn-monthly { background-color: var(--accent-blue); }
         .btn-partial { background-color: var(--accent-green); }
         
-        /* Botones de Archivo/GitHub */
         .file-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 10px; }
         .btn-file { padding: 8px; font-size: 0.65rem; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; color: white; }
         .btn-json { background: var(--gray); }
@@ -206,7 +205,14 @@
         input.onchange = e => {
             const file = e.target.files[0];
             const reader = new FileReader();
-            reader.onload = ev => { payments = JSON.parse(ev.target.result).payments || []; saveData(); updateUI(); };
+            reader.onload = ev => { 
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    payments = data.payments || []; 
+                    saveData(); 
+                    updateUI(); 
+                } catch(err) { alert("Archivo JSON no válido"); }
+            };
             reader.readAsText(file);
         };
         input.click();
@@ -215,16 +221,28 @@
     async function syncGitHub() {
         const REPO = "edu-m-l/amortizacion";
         const FILE_PATH = "datos.json";
-        const url = `https://raw.githubusercontent.com/${REPO}/main/${FILE_PATH}?t=${Date.now()}`;
+        // Usamos la API para evitar la caché del CDN de rawgithub
+        const url = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
+
         try {
-            const res = await fetch(url);
+            const res = await fetch(url, {
+                headers: { 'Accept': 'application/vnd.github.v3.raw' }
+            });
+
             if(res.ok) { 
                 const data = await res.json(); 
-                payments = data.payments || []; 
-                saveData(); updateUI(); 
-                alert("Sincronizado con GitHub ✅");
+                if (data && data.payments) {
+                    payments = data.payments; 
+                    saveData(); 
+                    updateUI(); 
+                    alert("Sincronizado con GitHub ✅");
+                }
+            } else {
+                alert("No se pudo obtener el archivo. Revisa que sea público y el nombre sea correcto.");
             }
-        } catch(e) { alert("Error al conectar con GitHub"); }
+        } catch(e) { 
+            alert("Error al conectar con GitHub. Revisa tu conexión."); 
+        }
     }
 
     function deleteItem(i) { if(confirm("¿Borrar?")) { payments.splice(i,1); saveData(); updateUI(); } }
