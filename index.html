@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Control Hipoteca - Compacto Izquierda</title>
+    <title>Control Hipoteca - Precisión Decimal</title>
     <style>
         :root { --azul: #1e40af; --verde: #16a34a; --bg: #f8fafc; }
         
@@ -45,6 +45,7 @@
             border: none; 
             font-size: 0.75rem;
             flex: 1;
+            cursor: pointer;
         }
         
         .resumen-cuota { 
@@ -96,15 +97,11 @@
             width: 100%;
             box-sizing: border-box; 
             background-color: white;
-            text-align: center; /* Centrado por defecto */
+            text-align: center;
         }
 
-        /* Alineación a la izquierda específica para la Fecha */
-        #fFecha {
-            text-align: left;
-            display: flex;
-            align-items: center;
-        }
+        /* Alineación izquierda para fecha */
+        #fFecha { text-align: left; display: flex; align-items: center; }
 
         .btn-add { 
             background: var(--azul); 
@@ -114,6 +111,7 @@
             margin-top: 4px;
             flex: 1 1 100%; 
             height: 38px;
+            cursor: pointer;
         }
 
         .cloud-bar { 
@@ -135,7 +133,7 @@
         
         .tipo-m { color: #2563eb; font-weight: bold; }
         .tipo-a { color: var(--verde); font-weight: bold; }
-        .btn-del { color: #ef4444; background: none; border: none; padding: 2px; font-size: 1rem; }
+        .btn-del { color: #ef4444; background: none; border: none; padding: 2px; font-size: 1rem; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -151,7 +149,7 @@
     </div>
 
     <div class="cloud-bar">
-        <button class="btn-sync" style="background:#2563eb; width: 100%;" onclick="pullFromGitHub()">🔄 Actualizar de GitHub (Público)</button>
+        <button class="btn-sync" style="background:#2563eb; width: 100%;" onclick="pullFromGitHub()">🔄 Actualizar de GitHub</button>
     </div>
 
     <div class="resumen-cuota">
@@ -170,7 +168,7 @@
         <div class="campo"><label>Fecha</label><input type="date" id="fFecha"></div>
         <div class="campo"><label>Tipo</label><select id="fTipo"><option value="M">Mensual</option><option value="A">Extra</option></select></div>
         <div class="campo"><label>Pagador</label><select id="fQuien"><option>Edu</option><option>Papas</option></select></div>
-        <div class="campo"><label>Importe</label><input type="number" id="fMonto" step="0.01" inputmode="decimal"></div>
+        <div class="campo"><label>Importe</label><input type="number" id="fMonto" step="0.01" inputmode="decimal" placeholder="0.00"></div>
         <button class="btn-add" onclick="agregar()">Añadir Registro</button>
     </div>
 
@@ -233,8 +231,8 @@
                 <td>${r.f.split('-').reverse().slice(0,2).join('/')}</td>
                 <td>${r.p}</td>
                 <td class="${r.t == 'M' ? 'tipo-m' : 'tipo-a'}">${r.t == 'M' ? 'M' : 'E'}</td>
-                <td>${r.i.toFixed(0)}€</td>
-                <td style="color:var(--verde)">${amort.toFixed(0)}€</td>
+                <td>${r.i.toFixed(2)}€</td>
+                <td style="color:var(--verde)">${amort.toFixed(2)}€</td>
                 <td><button class="btn-del" onclick="borrar(${r.id})">✕</button></td>
             </tr>`;
             tabla.insertAdjacentHTML('afterbegin', tr);
@@ -249,17 +247,25 @@
 
         document.getElementById('domCuota').innerText = cuota.toFixed(2) + "€";
         document.getElementById('domDesglose').innerHTML = `Int: ${(deuda * tasaM).toFixed(2)}€ | Cap: ${(cuota - (deuda * tasaM)).toFixed(2)}€ | ${mesesRest} m.`;
-        document.getElementById('domEdu').innerText = Math.round(sEdu).toLocaleString() + "€";
-        document.getElementById('domPapas').innerText = Math.round(sPapas).toLocaleString() + "€";
-        document.getElementById('domCap').innerText = Math.round(sCap).toLocaleString() + "€";
-        document.getElementById('domPend').innerText = Math.round(deuda).toLocaleString() + "€";
+        document.getElementById('domEdu').innerText = sEdu.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "€";
+        document.getElementById('domPapas').innerText = sPapas.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "€";
+        document.getElementById('domCap').innerText = sCap.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "€";
+        document.getElementById('domPend').innerText = deuda.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "€";
     }
 
     function agregar() {
         const f = document.getElementById('fFecha').value;
         const m = parseFloat(document.getElementById('fMonto').value);
-        if (!f || isNaN(m)) return;
-        registros.push({ id: Date.now(), f: f, p: document.getElementById('fQuien').value, t: document.getElementById('fTipo').value, i: m });
+        if (!f || isNaN(m) || m <= 0) return alert("Ingresa fecha e importe válido");
+
+        registros.push({ 
+            id: Date.now(), 
+            f: f, 
+            p: document.getElementById('fQuien').value, 
+            t: document.getElementById('fTipo').value, 
+            i: Number(m.toFixed(2)) // Asegura 2 decimales en el dato
+        });
+        
         actualizar();
         document.getElementById('fMonto').value = "";
     }
