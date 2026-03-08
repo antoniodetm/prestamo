@@ -2,84 +2,185 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Control Hipoteca - Cloud Sync</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Control Hipoteca - iPhone Ready</title>
     <style>
         :root { --azul: #1e40af; --verde: #16a34a; --bg: #f8fafc; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 20px; color: #1e293b; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 25px; }
-        .btn-sync { background: #24292e; color: white; padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; }
+        /* Ajustes base para móvil */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--bg); 
+            margin: 10px; 
+            color: #1e293b; 
+            -webkit-font-smoothing: antialiased;
+        }
         
-        .resumen-cuota { background: var(--azul); color: white; padding: 25px; border-radius: 10px; text-align: center; margin-bottom: 25px; }
-        .cuota-valor { font-size: 2.5rem; font-weight: bold; margin: 10px 0; }
+        .container { 
+            max-width: 1000px; 
+            margin: auto; 
+            background: white; 
+            padding: 15px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        }
         
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .card { background: white; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; }
-        .card h3 { margin: 0; font-size: 0.75rem; color: #64748b; text-transform: uppercase; }
-        .card p { margin: 8px 0 0; font-size: 1.25rem; font-weight: bold; }
+        .header { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px;
+            border-bottom: 2px solid #e2e8f0; 
+            padding-bottom: 15px; 
+            margin-bottom: 20px; 
+        }
 
-        .formulario { display: flex; gap: 10px; flex-wrap: wrap; background: #f1f5f9; padding: 20px; border-radius: 10px; align-items: flex-end; margin-bottom: 25px; }
-        .campo { display: flex; flex-direction: column; flex: 1; min-width: 140px; }
-        label { font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
-        input, select, .btn-add { padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.9rem; }
-        .btn-add { background: var(--azul); color: white; border: none; font-weight: bold; cursor: pointer; }
-
-        .cloud-bar { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; justify-content: center; border: 1px dashed #cbd5e1; }
+        @media (min-width: 600px) {
+            .header { flex-direction: row; justify-content: space-between; align-items: center; }
+            .container { padding: 30px; }
+        }
         
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
-        th { background: #f8fafc; color: #64748b; text-transform: uppercase; font-size: 0.75rem; }
+        .btn-sync { 
+            background: #24292e; 
+            color: white; 
+            padding: 10px 12px; 
+            border-radius: 8px; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 0.8rem;
+            flex: 1;
+        }
+        
+        .resumen-cuota { 
+            background: var(--azul); 
+            color: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            text-align: center; 
+            margin-bottom: 20px; 
+        }
+        .cuota-valor { font-size: 2.2rem; font-weight: bold; margin: 5px 0; }
+        
+        .stats { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 10px; 
+            margin-bottom: 20px; 
+        }
+        
+        @media (min-width: 768px) {
+            .stats { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        .card { background: white; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; }
+        .card h3 { margin: 0; font-size: 0.65rem; color: #64748b; text-transform: uppercase; }
+        .card p { margin: 5px 0 0; font-size: 1rem; font-weight: bold; }
+
+        .formulario { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            background: #f1f5f9; 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+        }
+        .campo { display: flex; flex-direction: column; }
+        .campo.full { grid-column: span 2; }
+        
+        label { font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: #475569; }
+        input, select, .btn-add { 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid #cbd5e1; 
+            font-size: 16px; /* Evita zoom automático en iOS */
+        }
+        .btn-add { 
+            grid-column: span 2;
+            background: var(--azul); 
+            color: white; 
+            border: none; 
+            font-weight: bold; 
+            margin-top: 5px;
+        }
+
+        .cloud-bar { 
+            background: #f1f5f9; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            flex-direction: column;
+            gap: 8px; 
+            align-items: center; 
+            border: 1px dashed #cbd5e1; 
+        }
+        
+        /* Contenedor para scroll de tabla en móvil */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
+        th { background: #f8fafc; color: #64748b; text-transform: uppercase; font-size: 0.7rem; }
+        
         .tipo-m { color: #2563eb; font-weight: bold; }
         .tipo-a { color: var(--verde); font-weight: bold; }
-        .btn-del { color: #ef4444; background: none; border: none; cursor: pointer; font-size: 1.1rem; }
+        .btn-del { color: #ef4444; background: none; border: none; padding: 5px; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h2 style="margin:0">Hipoteca 175.000€</h2>
-        <div style="display: flex; gap: 5px;">
-            <button class="btn-sync" onclick="exportar()">📥 Backup JSON</button>
+        <h2 style="margin:0; font-size: 1.4rem;">Hipoteca 175.000€</h2>
+        <div style="display: flex; gap: 8px; width: 100%;">
+            <button class="btn-sync" onclick="exportar()">📥 Backup</button>
             <button class="btn-sync" onclick="document.getElementById('importFile').click()">📤 Importar</button>
             <input type="file" id="importFile" style="display:none" onchange="importar(event)">
         </div>
     </div>
 
     <div class="cloud-bar">
-        <span style="font-size: 0.8rem; font-weight: bold;">GITHUB CLOUD:</span>
-        <button class="btn-sync" style="background:#2563eb" onclick="pullFromGitHub()">🔄 Cargar de GitHub (Público)</button>
-        <small id="lastUpdate" style="color:#64748b"></small>
+        <span style="font-size: 0.75rem; font-weight: bold;">GITHUB CLOUD</span>
+        <button class="btn-sync" style="background:#2563eb; width: 100%;" onclick="pullFromGitHub()">🔄 Cargar de GitHub</button>
     </div>
 
     <div class="resumen-cuota">
-        <div style="font-size: 0.9rem; opacity: 0.8;">PRÓXIMA CUOTA MENSUAL</div>
+        <div style="font-size: 0.8rem; opacity: 0.9;">PRÓXIMA CUOTA</div>
         <div class="cuota-valor" id="domCuota">0.00€</div>
-        <div id="domDesglose" style="font-size: 0.9rem;">Cargando datos...</div>
+        <div id="domDesglose" style="font-size: 0.75rem; line-height: 1.4;">Cargando...</div>
     </div>
 
     <div class="stats">
-        <div class="card"><h3>Total Edu</h3><p id="domEdu">0€</p></div>
-        <div class="card"><h3>Total Papas</h3><p id="domPapas">0€</p></div>
-        <div class="card"><h3>Capital Amortizado</h3><p id="domCap" style="color:var(--verde)">0€</p></div>
-        <div class="card"><h3>Deuda Pendiente</h3><p id="domPend" style="color:#f59e0b">175.000€</p></div>
+        <div class="card"><h3>Edu</h3><p id="domEdu">0€</p></div>
+        <div class="card"><h3>Papas</h3><p id="domPapas">0€</p></div>
+        <div class="card"><h3>Amortizado</h3><p id="domCap" style="color:var(--verde)">0€</p></div>
+        <div class="card"><h3>Pendiente</h3><p id="domPend" style="color:#f59e0b">0€</p></div>
     </div>
 
     <div class="formulario">
         <div class="campo"><label>Fecha</label><input type="date" id="fFecha"></div>
-        <div class="campo"><label>Pagador</label><select id="fQuien"><option>Edu</option><option>Papas</option></select></div>
-        <div class="campo"><label>Tipo</label><select id="fTipo"><option value="M">Mensualidad</option><option value="A">Anticipo</option></select></div>
-        <div class="campo"><label>Importe (€)</label><input type="number" id="fMonto" step="0.01"></div>
+        <div class="campo">
+            <label>Pagador</label>
+            <select id="fQuien"><option>Edu</option><option>Papas</option></select>
+        </div>
+        <div class="campo">
+            <label>Tipo</label>
+            <select id="fTipo"><option value="M">Mensual</option><option value="A">Extra</option></select>
+        </div>
+        <div class="campo">
+            <label>Importe (€)</label>
+            <input type="number" id="fMonto" step="0.01" inputmode="decimal">
+        </div>
         <button class="btn-add" onclick="agregar()">Añadir Registro</button>
     </div>
 
-    <table>
-        <thead>
-            <tr><th>Fecha</th><th>Pagador</th><th>Tipo</th><th>Importe</th><th>Interés</th><th>Capital</th><th></th></tr>
-        </thead>
-        <tbody id="domTabla"></tbody>
-    </table>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr><th>Fecha</th><th>Paga</th><th>Tipo</th><th>Importe</th><th>Cap.</th><th></th></tr>
+            </thead>
+            <tbody id="domTabla"></tbody>
+        </table>
+    </div>
 </div>
 
 <script>
@@ -90,27 +191,19 @@
     
     let registros = JSON.parse(localStorage.getItem('hipoteca_db_local')) || [];
 
-    // Cargar datos de GitHub automáticamente al abrir (Lectura pública)
-    window.onload = () => {
-        pullFromGitHub(true); // 'true' para que no alerte si falla al inicio
-    };
+    window.onload = () => { pullFromGitHub(true); };
 
     async function pullFromGitHub(isAuto = false) {
         try {
-            // Añadimos un timestamp para evitar caché del móvil
             const response = await fetch(JSON_URL + "?t=" + Date.now());
             if (response.ok) {
                 const data = await response.json();
                 if (data && data.length > 0) {
                     registros = data;
                     actualizar();
-                    if(!isAuto) alert("Datos actualizados desde GitHub");
                 }
             }
-        } catch (e) {
-            console.log("Error cargando de GitHub:", e);
-            if(!isAuto) alert("No se pudo conectar con GitHub");
-        }
+        } catch (e) { console.log("Cloud offline"); }
     }
 
     function actualizar() {
@@ -136,12 +229,11 @@
             sCap += amort;
 
             const tr = `<tr>
-                <td>${r.f}</td>
+                <td>${r.f.split('-').reverse().slice(0,2).join('/')}</td>
                 <td>${r.p}</td>
-                <td class="${r.t == 'M' ? 'tipo-m' : 'tipo-a'}">${r.t == 'M' ? 'MENSUAL' : 'ANTICIPO'}</td>
-                <td>${r.i.toFixed(2)}€</td>
-                <td style="color:#ef4444">-${intMes.toFixed(2)}€</td>
-                <td style="color:var(--verde); font-weight:bold">${amort.toFixed(2)}€</td>
+                <td class="${r.t == 'M' ? 'tipo-m' : 'tipo-a'}">${r.t == 'M' ? 'MEN' : 'EXT'}</td>
+                <td>${r.i.toFixed(0)}€</td>
+                <td style="color:var(--verde); font-weight:bold">${amort.toFixed(0)}€</td>
                 <td><button class="btn-del" onclick="borrar(${r.id})">✕</button></td>
             </tr>`;
             tabla.insertAdjacentHTML('afterbegin', tr);
@@ -155,55 +247,38 @@
         }
 
         document.getElementById('domCuota').innerText = cuota.toFixed(2) + "€";
-        document.getElementById('domDesglose').innerHTML = `Interés: ${(deuda * tasaM).toFixed(2)}€ | Amortización: ${(cuota - (deuda * tasaM)).toFixed(2)}€ | Restan ${mesesRest} meses`;
-        document.getElementById('domEdu').innerText = sEdu.toLocaleString() + "€";
-        document.getElementById('domPapas').innerText = sPapas.toLocaleString() + "€";
-        document.getElementById('domCap').innerText = sCap.toLocaleString() + "€";
-        document.getElementById('domPend').innerText = deuda.toLocaleString(undefined, {minimumFractionDigits: 2}) + "€";
+        document.getElementById('domDesglose').innerHTML = `Int: ${(deuda * tasaM).toFixed(2)}€ | Cap: ${(cuota - (deuda * tasaM)).toFixed(2)}€<br>Restan ${mesesRest} meses`;
+        document.getElementById('domEdu').innerText = Math.round(sEdu).toLocaleString() + "€";
+        document.getElementById('domPapas').innerText = Math.round(sPapas).toLocaleString() + "€";
+        document.getElementById('domCap').innerText = Math.round(sCap).toLocaleString() + "€";
+        document.getElementById('domPend').innerText = Math.round(deuda).toLocaleString() + "€";
     }
 
     function agregar() {
         const f = document.getElementById('fFecha').value;
         const m = parseFloat(document.getElementById('fMonto').value);
-        if (!f || isNaN(m) || m <= 0) return alert("Revisa la fecha y el importe");
+        if (!f || isNaN(m) || m <= 0) return alert("Revisa datos");
 
-        registros.push({
-            id: Date.now(),
-            f: f,
-            p: document.getElementById('fQuien').value,
-            t: document.getElementById('fTipo').value,
-            i: m
-        });
-
+        registros.push({ id: Date.now(), f: f, p: document.getElementById('fQuien').value, t: document.getElementById('fTipo').value, i: m });
         actualizar();
         document.getElementById('fMonto').value = "";
-        alert("Guardado en local. Recuerda exportar si quieres actualizar el archivo en GitHub.");
     }
 
     function borrar(id) {
-        if (confirm("¿Borrar registro?")) {
-            registros = registros.filter(r => r.id !== id);
-            actualizar();
-        }
+        if (confirm("¿Borrar?")) { registros = registros.filter(r => r.id !== id); actualizar(); }
     }
 
     function exportar() {
         const blob = new Blob([JSON.stringify(registros, null, 2)], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
-        a.href = url;
+        a.href = URL.createObjectURL(blob);
         a.download = "datos.json";
         a.click();
     }
 
     function importar(e) {
         const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                registros = JSON.parse(event.target.result);
-                actualizar();
-            } catch (err) { alert("Archivo no válido"); }
-        };
+        reader.onload = (event) => { try { registros = JSON.parse(event.target.result); actualizar(); } catch (err) { alert("Error"); } };
         reader.readAsText(e.target.files[0]);
     }
 
