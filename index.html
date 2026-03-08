@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Control Hipoteca - iPhone Ready</title>
+    <title>Control Hipoteca - Compacto</title>
     <style>
         :root { --azul: #1e40af; --verde: #16a34a; --bg: #f8fafc; }
         
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
             background: var(--bg); 
-            margin: 10px; 
+            margin: 8px; 
             color: #1e293b; 
             -webkit-font-smoothing: antialiased;
         }
@@ -19,7 +19,7 @@
             max-width: 1000px; 
             margin: auto; 
             background: white; 
-            padding: 15px; 
+            padding: 12px; 
             border-radius: 12px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
         }
@@ -27,91 +27,83 @@
         .header { 
             display: flex; 
             flex-direction: column; 
-            gap: 10px;
-            border-bottom: 2px solid #e2e8f0; 
-            padding-bottom: 15px; 
-            margin-bottom: 20px; 
+            gap: 8px;
+            border-bottom: 1px solid #e2e8f0; 
+            padding-bottom: 10px; 
+            margin-bottom: 12px; 
         }
 
         @media (min-width: 600px) {
             .header { flex-direction: row; justify-content: space-between; align-items: center; }
-            .container { padding: 30px; }
         }
         
         .btn-sync { 
             background: #24292e; 
             color: white; 
-            padding: 10px 12px; 
-            border-radius: 8px; 
+            padding: 6px 10px; 
+            border-radius: 6px; 
             border: none; 
-            cursor: pointer; 
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             flex: 1;
         }
         
         .resumen-cuota { 
             background: var(--azul); 
             color: white; 
-            padding: 20px; 
-            border-radius: 10px; 
+            padding: 12px; 
+            border-radius: 8px; 
             text-align: center; 
-            margin-bottom: 20px; 
+            margin-bottom: 12px; 
         }
-        .cuota-valor { font-size: 2.2rem; font-weight: bold; margin: 5px 0; }
+        .cuota-valor { font-size: 1.8rem; font-weight: bold; margin: 2px 0; }
         
         .stats { 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
-            gap: 10px; 
-            margin-bottom: 20px; 
+            gap: 8px; 
+            margin-bottom: 12px; 
         }
         
-        @media (min-width: 768px) {
-            .stats { grid-template-columns: repeat(4, 1fr); }
-        }
-
-        .card { background: white; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; }
-        .card h3 { margin: 0; font-size: 0.65rem; color: #64748b; text-transform: uppercase; }
-        .card p { margin: 5px 0; font-size: 1rem; font-weight: bold; }
+        .card { background: white; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; }
+        .card h3 { margin: 0; font-size: 0.6rem; color: #64748b; text-transform: uppercase; }
+        .card p { margin: 2px 0; font-size: 0.9rem; font-weight: bold; }
 
         .formulario { 
             display: flex;
             flex-wrap: wrap;
-            gap: 10px; 
+            gap: 8px; 
             background: #f1f5f9; 
-            padding: 15px; 
-            border-radius: 10px; 
-            margin-bottom: 20px; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-bottom: 12px; 
         }
         
         .campo { 
             display: flex; 
             flex-direction: column; 
-            flex: 1 1 calc(50% - 10px); 
-            min-width: 140px; 
+            flex: 1 1 calc(50% - 8px); 
+            min-width: 130px; 
         }
         
-        label { font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: #475569; }
+        label { font-size: 0.7rem; font-weight: bold; margin-bottom: 2px; color: #475569; }
         
-        /* Ajuste de alineación y tamaño igual para todos los inputs */
+        /* Diseño ultra-compacto: Sin padding vertical y altura reducida */
         input, select, .btn-add { 
-            height: 45px; /* Altura fija para igualar Pagador y Fecha */
-            padding: 0 10px; 
-            border-radius: 8px; 
+            height: 34px; 
+            padding: 0 8px; 
+            border-radius: 6px; 
             border: 1px solid #cbd5e1; 
             font-size: 16px; 
             width: 100%;
             box-sizing: border-box; 
             background-color: white;
-            text-align: center; /* Centra el texto en Fecha y otros campos */
+            text-align: center;
         }
 
-        /* Especifico para que el selector de fecha de iPhone no rompa la alineación */
         input[type="date"] {
             display: flex;
             align-items: center;
             justify-content: center;
-            text-indent: 0;
         }
 
         .btn-add { 
@@ -119,39 +111,39 @@
             color: white; 
             border: none; 
             font-weight: bold; 
-            margin-top: 5px;
+            margin-top: 4px;
             flex: 1 1 100%; 
-            height: 50px;
+            height: 38px;
         }
 
         .cloud-bar { 
             background: #f1f5f9; 
-            padding: 12px; 
+            padding: 8px; 
             border-radius: 8px; 
-            margin-bottom: 20px; 
+            margin-bottom: 12px; 
             display: flex; 
             flex-direction: column;
-            gap: 8px; 
+            gap: 6px; 
             align-items: center; 
             border: 1px dashed #cbd5e1; 
         }
         
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
-        th { background: #f8fafc; color: #64748b; text-transform: uppercase; font-size: 0.7rem; }
+        table { width: 100%; border-collapse: collapse; min-width: 450px; }
+        th, td { padding: 8px 6px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 0.8rem; }
+        th { background: #f8fafc; color: #64748b; text-transform: uppercase; font-size: 0.65rem; }
         
         .tipo-m { color: #2563eb; font-weight: bold; }
         .tipo-a { color: var(--verde); font-weight: bold; }
-        .btn-del { color: #ef4444; background: none; border: none; padding: 5px; font-size: 1.1rem; }
+        .btn-del { color: #ef4444; background: none; border: none; padding: 2px; font-size: 1rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h2 style="margin:0; font-size: 1.4rem;">Hipoteca 175.000€</h2>
-        <div style="display: flex; gap: 8px; width: 100%;">
+        <h2 style="margin:0; font-size: 1.2rem;">Hipoteca 175.000€</h2>
+        <div style="display: flex; gap: 6px; width: 100%;">
             <button class="btn-sync" onclick="exportar()">📥 Backup</button>
             <button class="btn-sync" onclick="document.getElementById('importFile').click()">📤 Importar</button>
             <input type="file" id="importFile" style="display:none" onchange="importar(event)">
@@ -159,14 +151,12 @@
     </div>
 
     <div class="cloud-bar">
-        <span style="font-size: 0.75rem; font-weight: bold;">GITHUB CLOUD</span>
-        <button class="btn-sync" style="background:#2563eb; width: 100%;" onclick="pullFromGitHub()">🔄 Cargar de GitHub</button>
+        <button class="btn-sync" style="background:#2563eb; width: 100%;" onclick="pullFromGitHub()">🔄 Actualizar de GitHub (Público)</button>
     </div>
 
     <div class="resumen-cuota">
-        <div style="font-size: 0.8rem; opacity: 0.9;">PRÓXIMA CUOTA</div>
         <div class="cuota-valor" id="domCuota">0.00€</div>
-        <div id="domDesglose" style="font-size: 0.75rem; line-height: 1.4;">Cargando...</div>
+        <div id="domDesglose" style="font-size: 0.7rem; opacity: 0.9;">Cargando...</div>
     </div>
 
     <div class="stats">
@@ -180,14 +170,14 @@
         <div class="campo"><label>Fecha</label><input type="date" id="fFecha"></div>
         <div class="campo"><label>Tipo</label><select id="fTipo"><option value="M">Mensual</option><option value="A">Extra</option></select></div>
         <div class="campo"><label>Pagador</label><select id="fQuien"><option>Edu</option><option>Papas</option></select></div>
-        <div class="campo"><label>Importe (€)</label><input type="number" id="fMonto" step="0.01" inputmode="decimal"></div>
+        <div class="campo"><label>Importe</label><input type="number" id="fMonto" step="0.01" inputmode="decimal"></div>
         <button class="btn-add" onclick="agregar()">Añadir Registro</button>
     </div>
 
     <div class="table-responsive">
         <table>
             <thead>
-                <tr><th>Fecha</th><th>Paga</th><th>Tipo</th><th>Importe</th><th>Cap.</th><th></th></tr>
+                <tr><th>Fecha</th><th>Paga</th><th>Tipo</th><th>Euros</th><th>Cap.</th><th></th></tr>
             </thead>
             <tbody id="domTabla"></tbody>
         </table>
@@ -214,7 +204,7 @@
                     actualizar();
                 }
             }
-        } catch (e) { console.log("Cloud offline"); }
+        } catch (e) { console.log("Offline"); }
     }
 
     function actualizar() {
@@ -242,9 +232,9 @@
             const tr = `<tr>
                 <td>${r.f.split('-').reverse().slice(0,2).join('/')}</td>
                 <td>${r.p}</td>
-                <td class="${r.t == 'M' ? 'tipo-m' : 'tipo-a'}">${r.t == 'M' ? 'MEN' : 'EXT'}</td>
+                <td class="${r.t == 'M' ? 'tipo-m' : 'tipo-a'}">${r.t == 'M' ? 'M' : 'E'}</td>
                 <td>${r.i.toFixed(0)}€</td>
-                <td style="color:var(--verde); font-weight:bold">${amort.toFixed(0)}€</td>
+                <td style="color:var(--verde)">${amort.toFixed(0)}€</td>
                 <td><button class="btn-del" onclick="borrar(${r.id})">✕</button></td>
             </tr>`;
             tabla.insertAdjacentHTML('afterbegin', tr);
@@ -258,7 +248,7 @@
         }
 
         document.getElementById('domCuota').innerText = cuota.toFixed(2) + "€";
-        document.getElementById('domDesglose').innerHTML = `Int: ${(deuda * tasaM).toFixed(2)}€ | Cap: ${(cuota - (deuda * tasaM)).toFixed(2)}€<br>Restan ${mesesRest} meses`;
+        document.getElementById('domDesglose').innerHTML = `Int: ${(deuda * tasaM).toFixed(2)}€ | Cap: ${(cuota - (deuda * tasaM)).toFixed(2)}€ | ${mesesRest} m.`;
         document.getElementById('domEdu').innerText = Math.round(sEdu).toLocaleString() + "€";
         document.getElementById('domPapas').innerText = Math.round(sPapas).toLocaleString() + "€";
         document.getElementById('domCap').innerText = Math.round(sCap).toLocaleString() + "€";
@@ -268,8 +258,7 @@
     function agregar() {
         const f = document.getElementById('fFecha').value;
         const m = parseFloat(document.getElementById('fMonto').value);
-        if (!f || isNaN(m) || m <= 0) return alert("Revisa datos");
-
+        if (!f || isNaN(m)) return;
         registros.push({ id: Date.now(), f: f, p: document.getElementById('fQuien').value, t: document.getElementById('fTipo').value, i: m });
         actualizar();
         document.getElementById('fMonto').value = "";
@@ -289,7 +278,7 @@
 
     function importar(e) {
         const reader = new FileReader();
-        reader.onload = (event) => { try { registros = JSON.parse(event.target.result); actualizar(); } catch (err) { alert("Error"); } };
+        reader.onload = (event) => { try { registros = JSON.parse(event.target.result); actualizar(); } catch (err) {} };
         reader.readAsText(e.target.files[0]);
     }
 
