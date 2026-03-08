@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Control Hipoteca - Versión Base</title>
+    <title>Control Hipoteca - Cloud Sync</title>
     <style>
         :root { --azul: #1e40af; --verde: #16a34a; --bg: #f8fafc; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 20px; color: #1e293b; }
@@ -24,8 +24,9 @@
         label { font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
         input, select, .btn-add { padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.9rem; }
         .btn-add { background: var(--azul); color: white; border: none; font-weight: bold; cursor: pointer; }
-        .btn-add:hover { background: #1e3a8a; }
 
+        .cloud-bar { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; justify-content: center; border: 1px dashed #cbd5e1; }
+        
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
         th { background: #f8fafc; color: #64748b; text-transform: uppercase; font-size: 0.75rem; }
@@ -38,18 +39,24 @@
 
 <div class="container">
     <div class="header">
-        <h2 style="margin:0">Hipoteca 175.000€ (1,5%)</h2>
-        <div>
-            <button class="btn-sync" onclick="document.getElementById('importFile').click()">📤 Importar datos.json</button>
-            <button class="btn-sync" onclick="exportar()">📥 Exportar datos.json</button>
+        <h2 style="margin:0">Hipoteca 175.000€</h2>
+        <div style="display: flex; gap: 5px;">
+            <button class="btn-sync" onclick="exportar()">📥 Backup JSON</button>
+            <button class="btn-sync" onclick="document.getElementById('importFile').click()">📤 Importar</button>
             <input type="file" id="importFile" style="display:none" onchange="importar(event)">
         </div>
     </div>
 
+    <div class="cloud-bar">
+        <span style="font-size: 0.8rem; font-weight: bold;">GITHUB CLOUD:</span>
+        <button class="btn-sync" style="background:#2563eb" onclick="pullFromGitHub()">🔄 Cargar de GitHub (Público)</button>
+        <small id="lastUpdate" style="color:#64748b"></small>
+    </div>
+
     <div class="resumen-cuota">
         <div style="font-size: 0.9rem; opacity: 0.8;">PRÓXIMA CUOTA MENSUAL</div>
-        <div class="cuota-valor" id="domCuota">603,92€</div>
-        <div id="domDesglose" style="font-size: 0.9rem;">Cargando...</div>
+        <div class="cuota-valor" id="domCuota">0.00€</div>
+        <div id="domDesglose" style="font-size: 0.9rem;">Cargando datos...</div>
     </div>
 
     <div class="stats">
@@ -62,7 +69,7 @@
     <div class="formulario">
         <div class="campo"><label>Fecha</label><input type="date" id="fFecha"></div>
         <div class="campo"><label>Pagador</label><select id="fQuien"><option>Edu</option><option>Papas</option></select></div>
-        <div class="campo"><label>Tipo</label><select id="fTipo"><option value="M">Mensualidad</option><option value="A">Anticipo (Extra)</option></select></div>
+        <div class="campo"><label>Tipo</label><select id="fTipo"><option value="M">Mensualidad</option><option value="A">Anticipo</option></select></div>
         <div class="campo"><label>Importe (€)</label><input type="number" id="fMonto" step="0.01"></div>
         <button class="btn-add" onclick="agregar()">Añadir Registro</button>
     </div>
@@ -79,51 +86,31 @@
     const C_INI = 175000;
     const I_ANUAL = 0.015;
     const PLAZO_MESES = 360;
+    const JSON_URL = "https://antoniodetm.github.io/prestamo/datos.json";
     
     let registros = JSON.parse(localStorage.getItem('hipoteca_db_local')) || [];
 
-    function agregar() {
-        const f = document.getElementById('fFecha').value;
-        const m = parseFloat(document.getElementById('fMonto').value);
-        if (!f || isNaN(m) || m <= 0) return alert("Revisa la fecha y el importe");
+    // Cargar datos de GitHub automáticamente al abrir (Lectura pública)
+    window.onload = () => {
+        pullFromGitHub(true); // 'true' para que no alerte si falla al inicio
+    };
 
-        registros.push({
-            id: Date.now(),
-            f: f,
-            p: document.getElementById('fQuien').value,
-            t: document.getElementById('fTipo').value,
-            i: m
-        });
-
-        actualizar();
-        document.getElementById('fMonto').value = "";
-    }
-
-    function borrar(id) {
-        if (confirm("¿Borrar registro?")) {
-            registros = registros.filter(r => r.id !== id);
-            actualizar();
+    async function pullFromGitHub(isAuto = false) {
+        try {
+            // Añadimos un timestamp para evitar caché del móvil
+            const response = await fetch(JSON_URL + "?t=" + Date.now());
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    registros = data;
+                    actualizar();
+                    if(!isAuto) alert("Datos actualizados desde GitHub");
+                }
+            }
+        } catch (e) {
+            console.log("Error cargando de GitHub:", e);
+            if(!isAuto) alert("No se pudo conectar con GitHub");
         }
-    }
-
-    function exportar() {
-        const blob = new Blob([JSON.stringify(registros, null, 2)], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "datos.json";
-        a.click();
-    }
-
-    function importar(e) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                registros = JSON.parse(event.target.result);
-                actualizar();
-            } catch (err) { alert("Archivo no válido"); }
-        };
-        reader.readAsText(e.target.files[0]);
     }
 
     function actualizar() {
@@ -168,15 +155,59 @@
         }
 
         document.getElementById('domCuota').innerText = cuota.toFixed(2) + "€";
-        document.getElementById('domDesglose').innerHTML = `Interés: ${(deuda * tasaM).toFixed(2)}€ | Capital: ${(cuota - (deuda * tasaM)).toFixed(2)}€ | Restan ${mesesRest} meses`;
+        document.getElementById('domDesglose').innerHTML = `Interés: ${(deuda * tasaM).toFixed(2)}€ | Amortización: ${(cuota - (deuda * tasaM)).toFixed(2)}€ | Restan ${mesesRest} meses`;
         document.getElementById('domEdu').innerText = sEdu.toLocaleString() + "€";
         document.getElementById('domPapas').innerText = sPapas.toLocaleString() + "€";
         document.getElementById('domCap').innerText = sCap.toLocaleString() + "€";
         document.getElementById('domPend').innerText = deuda.toLocaleString(undefined, {minimumFractionDigits: 2}) + "€";
     }
 
+    function agregar() {
+        const f = document.getElementById('fFecha').value;
+        const m = parseFloat(document.getElementById('fMonto').value);
+        if (!f || isNaN(m) || m <= 0) return alert("Revisa la fecha y el importe");
+
+        registros.push({
+            id: Date.now(),
+            f: f,
+            p: document.getElementById('fQuien').value,
+            t: document.getElementById('fTipo').value,
+            i: m
+        });
+
+        actualizar();
+        document.getElementById('fMonto').value = "";
+        alert("Guardado en local. Recuerda exportar si quieres actualizar el archivo en GitHub.");
+    }
+
+    function borrar(id) {
+        if (confirm("¿Borrar registro?")) {
+            registros = registros.filter(r => r.id !== id);
+            actualizar();
+        }
+    }
+
+    function exportar() {
+        const blob = new Blob([JSON.stringify(registros, null, 2)], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "datos.json";
+        a.click();
+    }
+
+    function importar(e) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                registros = JSON.parse(event.target.result);
+                actualizar();
+            } catch (err) { alert("Archivo no válido"); }
+        };
+        reader.readAsText(e.target.files[0]);
+    }
+
     document.getElementById('fFecha').valueAsDate = new Date();
-    actualizar();
 </script>
 </body>
 </html>
