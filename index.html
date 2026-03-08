@@ -2,248 +2,153 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hipoteca - Control Total y GitHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hipoteca Edu - GitHub Sync</title>
     <style>
-        :root { --primary: #2c3e50; --accent-blue: #3498db; --accent-green: #27ae60; --danger: #e74c3c; --github: #24292e; --gray: #95a5a6; --bg: #f0f3f5; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 10px; background-color: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        .container { background: white; padding: 1rem; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin: auto; box-sizing: border-box; display: flex; flex-direction: column; max-height: 98vh; }
+        :root { --primary: #1e40af; --secondary: #64748b; --success: #16a34a; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 20px; color: #1e293b; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         
-        .next-payment-box { background: #ebf5ff; border: 2px solid var(--accent-blue); padding: 10px; border-radius: 15px; margin-bottom: 10px; text-align: center; }
-        .next-payment-title { font-size: 0.65rem; font-weight: bold; color: var(--accent-blue); text-transform: uppercase; }
-        .next-payment-total { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin: 2px 0; }
-        .next-payment-split { font-size: 0.75rem; color: #555; display: flex; justify-content: center; gap: 8px; border-top: 1px solid #d0e3f5; padding-top: 4px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .btn-group { display: flex; gap: 10px; }
+        
+        .dashboard { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-bottom: 30px; }
+        .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .card { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: center; }
+        .card h3 { margin: 0; font-size: 0.7em; color: var(--secondary); text-transform: uppercase; }
+        .card p { margin: 5px 0 0; font-size: 1.3em; font-weight: bold; }
+        
+        .next-box { background: var(--primary); color: white; padding: 20px; border-radius: 12px; text-align: center; }
+        .next-box .amount { font-size: 2.2em; font-weight: bold; margin: 5px 0; }
 
-        .balance-card { background: var(--primary); color: white; padding: 12px; border-radius: 15px; text-align: center; margin-bottom: 8px; }
-        .balance-display { font-size: 1.8rem; font-weight: 800; }
+        .form-group { display: flex; gap: 10px; flex-wrap: wrap; background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 25px; align-items: flex-end; border: 1px solid #e2e8f0; }
+        .form-group div { display: flex; flex-direction: column; flex: 1; min-width: 130px; }
+        label { font-size: 0.8em; font-weight: bold; margin-bottom: 5px; }
         
-        .totals-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; background: #f8f9fa; padding: 8px; border-radius: 12px; border: 1px solid #eee; }
-        .total-value { font-size: 0.9rem; font-weight: 800; color: var(--primary); }
-        
-        .input-group { display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; margin-bottom: 8px; }
-        label { display: block; font-weight: 700; font-size: 0.6rem; color: var(--gray); text-transform: uppercase; }
-        input, select { width: 100%; padding: 8px; border: 2px solid #ddd; border-radius: 8px; font-size: 0.85rem; }
-        
-        .actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .btn-main { padding: 12px; border: none; border-radius: 10px; cursor: pointer; color: white; font-weight: 800; font-size: 0.75rem; }
-        .btn-monthly { background-color: var(--accent-blue); }
-        .btn-partial { background-color: var(--accent-green); }
-        
-        .file-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 10px; }
-        .btn-file { padding: 8px; font-size: 0.65rem; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; color: white; }
-        .btn-json { background: var(--gray); }
-        .btn-github { background: var(--github); }
+        input, select, button { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; }
+        .btn { cursor: pointer; font-weight: bold; border: none; transition: 0.2s; }
+        .btn-add { background: var(--primary); color: white; }
+        .btn-exp { background: #24292e; color: white; }
+        .btn-sync { background: #fff; border: 1px solid #cbd5e1; color: var(--secondary); }
 
-        .history-container { flex-grow: 1; overflow-y: auto; border-top: 1px solid #eee; }
-        ul { list-style: none; padding: 0; margin: 0; }
-        li { background: #fff; padding: 10px; border-radius: 12px; margin-top: 8px; display: flex; align-items: center; border: 1px solid #eee; }
-        
-        .order-controls { display: flex; flex-direction: column; gap: 2px; margin-right: 8px; }
-        .btn-order { background: #f0f0f0; border: none; border-radius: 4px; padding: 4px; cursor: pointer; font-size: 0.6rem; }
-        
-        .item-content { flex-grow: 1; }
-        .item-amount-paid { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
-        .item-detail-row { display: flex; gap: 8px; font-size: 0.7rem; margin-top: 3px; border-top: 1px dashed #eee; padding-top: 3px; }
-        .item-sub { font-size: 0.65rem; color: #777; }
-        .btn-delete { background: #fff0f0; color: var(--danger); border: none; font-size: 1.2rem; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+        th { background: #f8fafc; color: var(--secondary); text-transform: uppercase; font-size: 0.7em; }
+        .t-m { color: #2563eb; font-weight: bold; }
+        .t-a { color: var(--success); font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-fixed">
-        <div class="file-actions">
-            <button class="btn-file btn-json" onclick="exportToJSON()">EXPORTAR JSON</button>
-            <button class="btn-file btn-json" onclick="importJSON()">ABRIR JSON</button>
-            <button class="btn-file btn-github" onclick="syncGitHub()">GITHUB SYNC</button>
+    <div class="header">
+        <div>
+            <h2 style="margin:0">Hipoteca 175k (1,5%)</h2>
+            <div id="status" style="font-size:0.7em; color:var(--success)">● Datos sincronizados con GitHub</div>
         </div>
-
-        <div class="next-payment-box">
-            <div class="next-payment-title">Próximo Vencimiento (<span id="nextDate">--/--/--</span>)</div>
-            <div id="nextPaymentTotal" class="next-payment-total">0,00€</div>
-            <div class="next-payment-split">
-                <span>Principal: <b id="nextPrincipal" style="color:var(--accent-green)">0,00€</b></span>
-                <span>Interés: <b id="nextInterest" style="color:var(--danger)">0,00€</b></span>
-            </div>
+        <div class="btn-group">
+            <button class="btn btn-sync" onclick="fetchFromGitHub()">🔄 Forzar Carga GitHub</button>
+            <button class="btn btn-exp" onclick="exportarJSON()">📥 Exportar para GitHub Desktop</button>
         </div>
-
-        <div class="balance-card">
-            <div style="font-size: 0.6rem; opacity: 0.8; font-weight: bold;">CAPITAL PENDIENTE</div>
-            <div id="balanceDisplay" class="balance-display">175.000,00€</div>
+    </div>
+    
+    <div class="dashboard">
+        <div class="stats">
+            <div class="card"><h3>Total Edu</h3><p id="tEdu">0€</p></div>
+            <div class="card"><h3>Total Papas</h3><p id="tPapas">0€</p></div>
+            <div class="card" style="border-left:4px solid var(--success)"><h3>Amortizado Real</h3><p id="tCap" style="color:var(--success)">0€</p></div>
+            <div class="card" style="border-left:4px solid #f59e0b"><h3>Pendiente</h3><p id="tPend" style="color:#f59e0b">175.000€</p></div>
         </div>
-
-        <div class="totals-panel">
-            <div style="text-align: center; border-right: 1px solid #ddd;">
-                <div style="font-size: 0.55rem; color: var(--gray);">TOTAL EDU</div>
-                <div id="totalEdu" class="total-value">0,00€</div>
-            </div>
-            <div style="text-align: center;">
-                <div style="font-size: 0.55rem; color: var(--gray);">TOTAL PAPAS</div>
-                <div id="totalPapas" class="total-value">0,00€</div>
-            </div>
-        </div>
-
-        <div class="input-group">
-            <div><label>Fecha</label><input type="date" id="dateInput"></div>
-            <div><label>Importe Pago</label><input type="number" id="paymentInput" step="any" inputmode="decimal"></div>
-        </div>
-        <div style="margin-bottom: 8px;">
-            <label>Pagado por</label>
-            <select id="whoInput"><option value="Edu">Edu</option><option value="Papas">Papas</option></select>
-        </div>
-        <div class="actions-row">
-            <button class="btn-main btn-monthly" onclick="addPayment('MENSUAL')">PAGO MENSUAL</button>
-            <button class="btn-main btn-partial" onclick="addPayment('PARCIAL')">AMORT. PARCIAL</button>
+        <div class="next-box">
+            <h3>Nueva Cuota Estimada</h3>
+            <div class="amount" id="valCuota">---</div>
+            <div id="valDesglose" style="font-size:0.85em; opacity:0.9">Calculando...</div>
         </div>
     </div>
 
-    <div class="history-container">
-        <ul id="historyList"></ul>
+    <div class="form-group">
+        <div><label>Fecha</label><input type="date" id="fecha"></div>
+        <div><label>Pagador</label><select id="pagador"><option>Edu</option><option>Papas</option></select></div>
+        <div><label>Tipo</label><select id="tipo"><option value="M">Mensualidad</option><option value="A">Anticipo</option></select></div>
+        <div><label>Importe</label><input type="number" id="importe" step="0.01"></div>
+        <button class="btn btn-add" onclick="registrar()">Añadir Registro</button>
     </div>
+
+    <table>
+        <thead>
+            <tr><th>Fecha</th><th>Pagador</th><th>Tipo</th><th>Total</th><th>Interés</th><th>Capital</th><th>Acción</th></tr>
+        </thead>
+        <tbody id="lista"></tbody>
+    </table>
 </div>
 
 <script>
-    const INITIAL_BASE = 175000;
-    const TIPO_FIJO = 0.0155; 
-    let payments = [];
+    const JSON_URL = 'https://antoniodetm.github.io/prestamo/datos.json';
+    let logs = [];
+    const C_INI = 175000, I_AN = 0.015, MESES_TOTAL = 360;
 
-    window.onload = () => {
-        const savedData = localStorage.getItem('loanData');
-        if (savedData) payments = JSON.parse(savedData).payments || [];
-        setUltimoDiaMes();
-        updateUI();
-    };
-
-    function setUltimoDiaMes() {
-        const hoy = new Date();
-        const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
-        document.getElementById('dateInput').valueAsDate = ultimoDia;
-        document.getElementById('nextDate').innerText = ultimoDia.toLocaleDateString('es-ES');
-    }
-
-    function addPayment(type) {
-        const input = document.getElementById('paymentInput');
-        const val = parseFloat(input.value);
-        const date = document.getElementById('dateInput').value;
-        const who = document.getElementById('whoInput').value;
-        if (isNaN(val) || val <= 0) return alert("Importe no válido");
-
-        const saldoAntes = calcularSaldoActual();
-        let capNeto = val;
-        let intMes = 0;
-
-        if (type === 'MENSUAL') {
-            intMes = (saldoAntes * TIPO_FIJO) / 12;
-            capNeto = val - intMes;
-        }
-
-        payments.unshift({ id: Date.now(), amount: capNeto, fullCuota: val, intereses: intMes, date, type, who });
-        input.value = "";
-        saveData();
-        updateUI();
-    }
-
-    function calcularSaldoActual() {
-        return INITIAL_BASE - payments.reduce((acc, p) => acc + (p.amount || 0), 0);
-    }
-
-    function updateUI() {
-        const saldo = calcularSaldoActual();
-        document.getElementById('balanceDisplay').innerText = formatEuro(saldo);
-        
-        const sumEdu = payments.filter(p => p.who === 'Edu').reduce((acc, p) => acc + (p.fullCuota || p.amount || 0), 0);
-        const sumPapas = payments.filter(p => p.who === 'Papas').reduce((acc, p) => acc + (p.fullCuota || p.amount || 0), 0);
-        document.getElementById('totalEdu').innerText = formatEuro(sumEdu);
-        document.getElementById('totalPapas').innerText = formatEuro(sumPapas);
-
-        const pInt = (saldo * TIPO_FIJO) / 12;
-        const uCuota = payments.find(p => p.type === 'MENSUAL')?.fullCuota || 608.20;
-        document.getElementById('nextPaymentTotal').innerText = formatEuro(uCuota);
-        document.getElementById('nextInterest').innerText = formatEuro(pInt);
-        document.getElementById('nextPrincipal').innerText = formatEuro(uCuota - pInt);
-
-        const list = document.getElementById('historyList');
-        list.innerHTML = "";
-        payments.forEach((p, i) => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <div class="order-controls">
-                    <button class="btn-order" onclick="moveItem(${i}, -1)">▲</button>
-                    <button class="btn-order" onclick="moveItem(${i}, 1)">▼</button>
-                </div>
-                <div class="item-content">
-                    <div class="item-amount-paid">${formatEuro(p.fullCuota || p.amount)}</div>
-                    <div class="item-sub"><b>${p.type}</b> | ${p.date.split('-').reverse().join('/')} | Por: ${p.who}</div>
-                    <div class="item-detail-row">
-                        <span style="color:var(--accent-green)">Ppal: <b>${formatEuro(p.amount)}</b></span>
-                        ${p.intereses > 0 ? `<span style="color:var(--danger)">Int: <b>${formatEuro(p.intereses)}</b></span>` : '<span>Extra</span>'}
-                    </div>
-                </div>
-                <button class="btn-delete" onclick="deleteItem(${i})">×</button>
-            `;
-            list.appendChild(li);
-        });
-    }
-
-    function moveItem(index, direction) {
-        const newIndex = index + direction;
-        if (newIndex >= 0 && newIndex < payments.length) {
-            [payments[index], payments[newIndex]] = [payments[newIndex], payments[index]];
-            saveData(); updateUI();
-        }
-    }
-
-    function exportToJSON() {
-        const blob = new Blob([JSON.stringify({payments})], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = "hipoteca.json"; a.click();
-    }
-
-    function importJSON() {
-        const input = document.createElement('input'); input.type = 'file';
-        input.onchange = e => {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = ev => { 
-                try {
-                    const data = JSON.parse(ev.target.result);
-                    payments = data.payments || []; 
-                    saveData(); 
-                    updateUI(); 
-                } catch(err) { alert("Archivo JSON no válido"); }
-            };
-            reader.readAsText(file);
-        };
-        input.click();
-    }
-
-    async function syncGitHub() {
-        // URL directa a tu JSON en GitHub Pages
-        const url = `https://antoniodetm.github.io/prestamo/datos.json?t=${Date.now()}`;
-
+    // 1. CARGA AUTOMÁTICA DESDE GITHUB
+    async function fetchFromGitHub() {
         try {
-            const res = await fetch(url);
-            if(res.ok) { 
-                const data = await res.json(); 
-                if (data && data.payments) {
-                    payments = data.payments; 
-                    saveData(); 
-                    updateUI(); 
-                    alert("Datos cargados desde GitHub ✅");
-                } else {
-                    alert("El archivo JSON existe pero el formato es incorrecto.");
-                }
-            } else {
-                alert("No se pudo acceder al archivo en GitHub (Error " + res.status + ")");
+            const response = await fetch(JSON_URL + '?nocache=' + new Date().getTime());
+            if (response.ok) {
+                logs = await response.json();
+                run();
             }
-        } catch(e) { 
-            alert("Error de conexión. Verifica que el repositorio sea público."); 
-        }
+        } catch (e) { console.log("Usando datos locales o vacío."); run(); }
     }
 
-    function deleteItem(i) { if(confirm("¿Borrar?")) { payments.splice(i,1); saveData(); updateUI(); } }
-    function saveData() { localStorage.setItem('loanData', JSON.stringify({ payments })); }
-    function formatEuro(v) { return v.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + "€"; }
+    function registrar() {
+        const f = document.getElementById('fecha').value, p = document.getElementById('pagador').value;
+        const t = document.getElementById('tipo').value, i = parseFloat(document.getElementById('importe').value);
+        if (!f || isNaN(i)) return alert("Datos cojos");
+        logs.push({ id: Date.now(), f, p, t, i });
+        run();
+    }
+
+    function eliminar(id) {
+        if(confirm("¿Borrar?")) { logs = logs.filter(l => l.id !== id); run(); }
+    }
+
+    function exportarJSON() {
+        const dataStr = JSON.stringify(logs, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "datos.json"; // Siempre con este nombre
+        link.click();
+        alert("Archivo 'datos.json' descargado. Muévelo a tu carpeta de GitHub y haz el Push.");
+    }
+
+    function run() {
+        logs.sort((a, b) => new Date(a.f) - new Date(b.f));
+        let deuda = C_INI, sEdu = 0, sPapas = 0, sCap = 0, mensualidades = 0;
+
+        const html = logs.map(l => {
+            let intMes = 0, amort = 0;
+            if (l.t === 'A') { amort = l.i; } 
+            else { intMes = (deuda * I_AN) / 12; amort = l.i - intMes; mensualidades++; }
+            deuda -= amort;
+            if (l.p === 'Edu') sEdu += l.i; else sPapas += l.i;
+            sCap += amort;
+            return `<tr><td>${l.f}</td><td>${l.p}</td><td class="${l.t=='M'?'t-m':'t-a'}">${l.t=='M'?'MENSUAL':'ANTICIPO'}</td><td>${l.i.toFixed(2)}€</td><td>-${intMes.toFixed(2)}€</td><td>${amort.toFixed(2)}€</td><td><button onclick="eliminar(${l.id})" style="border:none;background:none;color:red;cursor:pointer">✕</button></td></tr>`;
+        });
+
+        let mesesRest = MESES_TOTAL - mensualidades;
+        let iM = I_AN / 12;
+        let nCuota = mesesRest > 0 ? (deuda * iM * Math.pow(1 + iM, mesesRest)) / (Math.pow(1 + iM, mesesRest) - 1) : 0;
+        
+        document.getElementById('lista').innerHTML = html.reverse().join('');
+        document.getElementById('tEdu').innerText = sEdu.toLocaleString() + "€";
+        document.getElementById('tPapas').innerText = sPapas.toLocaleString() + "€";
+        document.getElementById('tCap').innerText = sCap.toLocaleString() + "€";
+        document.getElementById('tPend').innerText = deuda.toLocaleString(undefined, {minimumFractionDigits:2}) + "€";
+        document.getElementById('valCuota').innerText = nCuota.toFixed(2) + "€";
+        document.getElementById('valDesglose').innerHTML = `Interés mes: ${(deuda*iM).toFixed(2)}€ | Capital: ${(nCuota-(deuda*iM)).toFixed(2)}€<br><small>Quedan ${mesesRest} meses</small>`;
+    }
+
+    document.getElementById('fecha').valueAsDate = new Date();
+    fetchFromGitHub();
 </script>
 </body>
 </html>
