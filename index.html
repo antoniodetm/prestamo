@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Control Hipoteca - Compacto</title>
+    <title>Control Hipoteca - Compacto Izquierda</title>
     <style>
         :root { --azul: #1e40af; --verde: #16a34a; --bg: #f8fafc; }
         
@@ -87,7 +87,6 @@
         
         label { font-size: 0.7rem; font-weight: bold; margin-bottom: 2px; color: #475569; }
         
-        /* Diseño ultra-compacto: Sin padding vertical y altura reducida */
         input, select, .btn-add { 
             height: 34px; 
             padding: 0 8px; 
@@ -97,13 +96,14 @@
             width: 100%;
             box-sizing: border-box; 
             background-color: white;
-            text-align: center;
+            text-align: center; /* Centrado por defecto */
         }
 
-        input[type="date"] {
+        /* Alineación a la izquierda específica para la Fecha */
+        #fFecha {
+            text-align: left;
             display: flex;
             align-items: center;
-            justify-content: center;
         }
 
         .btn-add { 
