@@ -74,7 +74,7 @@
         .card h3 { margin: 0; font-size: 0.65rem; color: #64748b; text-transform: uppercase; }
         .card p { margin: 5px 0; font-size: 1rem; font-weight: bold; }
 
-        /* Corrección del formulario para iPhone 12 */
+        /* Formulario optimizado: Fecha=Tipo, Pagador=Importe */
         .formulario { 
             display: flex;
             flex-wrap: wrap;
@@ -87,8 +87,8 @@
         .campo { 
             display: flex; 
             flex-direction: column; 
-            flex: 1 1 calc(50% - 10px); /* Ocupa el 50% menos el gap */
-            min-width: 140px; /* Evita que se compriman demasiado */
+            flex: 1 1 calc(50% - 10px); /* Obliga a que siempre vayan de 2 en 2 */
+            min-width: 140px; 
         }
         
         label { font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: #475569; }
@@ -98,7 +98,7 @@
             border: 1px solid #cbd5e1; 
             font-size: 16px; 
             width: 100%;
-            box-sizing: border-box; /* Asegura que el padding no sume al ancho */
+            box-sizing: border-box; 
         }
         .btn-add { 
             background: var(--azul); 
@@ -106,7 +106,7 @@
             border: none; 
             font-weight: bold; 
             margin-top: 5px;
-            flex: 1 1 100%; /* El botón siempre ocupa el 100% de ancho */
+            flex: 1 1 100%; 
         }
 
         .cloud-bar { 
@@ -163,18 +163,11 @@
 
     <div class="formulario">
         <div class="campo"><label>Fecha</label><input type="date" id="fFecha"></div>
-        <div class="campo">
-            <label>Pagador</label>
-            <select id="fQuien"><option>Edu</option><option>Papas</option></select>
-        </div>
-        <div class="campo">
-            <label>Tipo</label>
-            <select id="fTipo"><option value="M">Mensual</option><option value="A">Extra</option></select>
-        </div>
-        <div class="campo">
-            <label>Importe (€)</label>
-            <input type="number" id="fMonto" step="0.01" inputmode="decimal">
-        </div>
+        <div class="campo"><label>Tipo</label><select id="fTipo"><option value="M">Mensual</option><option value="A">Extra</option></select></div>
+        
+        <div class="campo"><label>Pagador</label><select id="fQuien"><option>Edu</option><option>Papas</option></select></div>
+        <div class="campo"><label>Importe (€)</label><input type="number" id="fMonto" step="0.01" inputmode="decimal"></div>
+        
         <button class="btn-add" onclick="agregar()">Añadir Registro</button>
     </div>
 
